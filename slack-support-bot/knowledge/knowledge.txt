@@ -1,0 +1,13 @@
+source_url: https://kaizendev.com/support/docs/ticketing
+
+# How to Create a Support Ticket
+
+To create a new support ticket, you have two options:
+
+1.  **Private Ticket**: Click the "Create Ticket" button in the #support channel. This will create a private thread between you and the support bot.
+
+2.  **Public Forum**: Post your question directly in the #public-support forum channel. The bot will reply there, and everyone can see the conversation.
+
+# Escalating to a Human
+
+If the bot cannot answer your question, or if you explicitly ask to "speak to a human", your ticket will be automatically escalated to the human support team. A member of the team will join your thread to assist you further.
