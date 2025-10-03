@@ -29,6 +29,7 @@ class SupportDoc(lancedb.pydantic.LanceModel):
     text: str
     vector: lancedb.pydantic.Vector(1536)
     source_url: str
+    chunk_ref: str = ""  # Reference to specific chunk
     page_title: str = ""
     crawled_at: str = ""
 
@@ -46,14 +47,16 @@ def normalize_url(url: str) -> str:
     ))
     return normalized
 
-def should_crawl_url(url: str, base_domain: str, start_path: str) -> bool:
-    """Determine if a URL should be crawled."""
+def should_crawl_url(url: str, base_domain: str, start_paths: List[str]) -> bool:
+    """Determine if a URL should be crawled with support for multiple documentation paths."""
     parsed = urlparse(url)
     
     if parsed.netloc != base_domain:
         return False
     
-    if not parsed.path.startswith(start_path):
+    # Check if the URL path starts with any of the allowed paths
+    path_allowed = any(parsed.path.startswith(path) for path in start_paths)
+    if not path_allowed:
         return False
     
     skip_patterns = [
@@ -70,17 +73,19 @@ def should_crawl_url(url: str, base_domain: str, start_path: str) -> bool:
 
 # --- CONTENT EXTRACTION & CHUNKING ---
 def extract_main_content(soup: BeautifulSoup, url: str) -> Dict[str, str]:
-    """Extracts the main textual content and metadata."""
+    """Enhanced content extraction for documentation sites."""
     title = ""
     if soup.title:
         title = soup.title.string.strip() if soup.title.string else ""
     elif soup.find('h1'):
         title = soup.find('h1').get_text(strip=True)
     
+    # More comprehensive selectors for documentation sites
     main_selectors = [
         "main", "article", "[role='main']", "#main-content", 
         ".main-content", ".content", ".article-body", ".documentation",
-        ".doc-content", ".post-content", "#content", ".page-content"
+        ".doc-content", ".post-content", "#content", ".page-content",
+        ".docs-content", ".markdown-body", ".md-content", ".guide-content"
     ]
     
     content_element = None
@@ -95,11 +100,17 @@ def extract_main_content(soup: BeautifulSoup, url: str) -> Dict[str, str]:
     if not content_element:
         return {"title": title, "content": ""}
     
+    # Remove navigation, sidebars, etc.
     for element in content_element(["script", "style", "nav", "footer", "aside", 
                                      "form", "header", "iframe", "noscript", 
                                      ".navigation", ".sidebar", ".ad", ".advertisement",
-                                     ".breadcrumb", ".toc"]):
+                                     ".breadcrumb", ".toc", ".table-of-contents"]):
         element.decompose()
+    
+    # Handle code blocks specially
+    for code in content_element.find_all(['pre', 'code']):
+        # Preserve code formatting
+        code['data-code'] = True
     
     text = content_element.get_text(separator='\n', strip=True)
     text = re.sub(r'\n\s*\n+', '\n\n', text)
@@ -144,12 +155,14 @@ def chunk_text(text: str, max_chars: int = 1000) -> List[str]:
     return chunks
 
 # --- CRAWL STATE MANAGEMENT ---
-def save_crawl_state(state_file: str, visited_urls: Set[str], to_visit: List[str], stats: Dict):
-    """Save the current crawl state to a file."""
+def save_crawl_state(state_file: str, visited_urls: Set[str], to_visit: List[str], 
+                    stats: Dict, processed_urls: Set[str]):
+    """Save the current crawl state to a file with processed URLs tracking."""
     state = {
         "visited_urls": list(visited_urls),
         "to_visit": to_visit,
         "stats": stats,
+        "processed_urls": list(processed_urls),
         "timestamp": time.time()
     }
     with open(state_file, 'w') as f:
@@ -161,7 +174,8 @@ def load_crawl_state(state_file: str) -> Dict:
         return {
             "visited_urls": set(),
             "to_visit": [],
-            "stats": defaultdict(int)
+            "stats": defaultdict(int),
+            "processed_urls": set()
         }
     
     try:
@@ -170,19 +184,22 @@ def load_crawl_state(state_file: str) -> Dict:
             return {
                 "visited_urls": set(state.get("visited_urls", [])),
                 "to_visit": state.get("to_visit", []),
-                "stats": defaultdict(int, state.get("stats", {}))
+                "stats": defaultdict(int, state.get("stats", {})),
+                "processed_urls": set(state.get("processed_urls", []))
             }
     except Exception as e:
         print(f"Error loading crawl state: {e}")
         return {
             "visited_urls": set(),
             "to_visit": [],
-            "stats": defaultdict(int)
+            "stats": defaultdict(int),
+            "processed_urls": set()
         }
 
 # --- PLAYWRIGHT CRAWLER (for JS-heavy sites) ---
-async def crawl_with_playwright(start_url: str, max_pages: int = None, table=None, state_file: str = None):
-    """Crawl using Playwright for JavaScript-rendered content."""
+async def crawl_with_playwright(start_url: str, max_pages: int = None, table=None, 
+                               state_file: str = None, additional_paths: List[str] = None):
+    """Enhanced crawler with support for multiple documentation paths."""
     if not PLAYWRIGHT_AVAILABLE:
         print("❌ Playwright is not installed. Please run:")
         print("   pip install playwright")
@@ -191,27 +208,40 @@ async def crawl_with_playwright(start_url: str, max_pages: int = None, table=Non
     
     parsed_start = urlparse(start_url)
     base_domain = parsed_start.netloc
-    # For Zscaler, keep more of the path to stay within product docs
+    
+    # Extract the initial path and add any additional paths
     path_parts = [p for p in parsed_start.path.split('/') if p]
     start_path = '/' + path_parts[0] if path_parts else '/'
+    
+    # For Zscaler and similar sites, add common documentation paths
+    default_paths = [start_path]
+    if additional_paths:
+        default_paths.extend(additional_paths)
+    
+    # For Zscaler specifically, add these paths
+    if "zscaler.com" in base_domain:
+        default_paths.extend(["/zia", "/zpa", "/zdx", "/zda", "/zcc", "/ztna"])
     
     # Load previous state if available
     state = load_crawl_state(state_file) if state_file else {
         "visited_urls": set(),
         "to_visit": [],
-        "stats": defaultdict(int)
+        "stats": defaultdict(int),
+        "processed_urls": set()
     }
     
     visited_urls = state["visited_urls"]
     to_visit = state["to_visit"] if state["to_visit"] else [start_url]
     stats = state["stats"]
+    processed_urls = state["processed_urls"]
     
     print(f"\n🌐 Using Playwright (JavaScript-enabled browser)")
     print(f"   Base domain: {base_domain}")
-    print(f"   Start path: {start_path}")
+    print(f"   Start paths: {', '.join(default_paths)}")
     print(f"   Max pages: {max_pages or 'unlimited'}")
     print(f"   Resuming from previous crawl: {len(visited_urls)} URLs already visited")
-    print(f"   URLs in queue: {len(to_visit)}\n")
+    print(f"   URLs in queue: {len(to_visit)}")
+    print(f"   URLs already processed: {len(processed_urls)}\n")
     
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True)
@@ -224,7 +254,7 @@ async def crawl_with_playwright(start_url: str, max_pages: int = None, table=Non
         batch_counter = 0
         save_interval = 5  # Save state every 5 pages
         
-        while to_visit and (max_pages is None or len(visited_urls) < max_pages):
+        while to_visit and (max_pages is None or len(processed_urls) < max_pages):
             url = to_visit.pop(0)
             normalized_url = normalize_url(url)
             
@@ -232,7 +262,7 @@ async def crawl_with_playwright(start_url: str, max_pages: int = None, table=Non
                 continue
             
             visited_urls.add(normalized_url)
-            print(f"[{len(visited_urls)}] Scraping: {normalized_url}")
+            print(f"[{len(processed_urls)+1}] Scraping: {normalized_url}")
             
             try:
                 # Navigate and wait for content
@@ -254,6 +284,7 @@ async def crawl_with_playwright(start_url: str, max_pages: int = None, table=Non
                         "title": extracted['title']
                     }, table)
                     
+                    processed_urls.add(normalized_url)
                     stats['scraped'] += 1
                     print(f"   ✓ Scraped and saved: {extracted['title'][:60]}...")
                 else:
@@ -266,7 +297,7 @@ async def crawl_with_playwright(start_url: str, max_pages: int = None, table=Non
                     absolute_url = urljoin(normalized_url, href)
                     absolute_url = normalize_url(absolute_url)
                     
-                    if (should_crawl_url(absolute_url, base_domain, start_path) 
+                    if (should_crawl_url(absolute_url, base_domain, default_paths) 
                         and absolute_url not in visited_urls
                         and absolute_url not in to_visit):
                         to_visit.append(absolute_url)
@@ -280,11 +311,11 @@ async def crawl_with_playwright(start_url: str, max_pages: int = None, table=Non
                 # Save state periodically
                 batch_counter += 1
                 if batch_counter % save_interval == 0:
-                    save_crawl_state(state_file, visited_urls, to_visit, stats)
-                    print(f"   💾 Saved crawl state (visited {len(visited_urls)} URLs)")
+                    save_crawl_state(state_file, visited_urls, to_visit, stats, processed_urls)
+                    print(f"   💾 Saved crawl state (visited {len(visited_urls)} URLs, processed {len(processed_urls)})")
                 
                 # Progress update every 10 pages
-                if len(visited_urls) % 10 == 0:
+                if len(processed_urls) % 10 == 0:
                     print(f"\n📊 Progress: {stats['scraped']} pages scraped, "
                           f"{len(visited_urls)} visited, {len(to_visit)} queued\n")
                 
@@ -298,7 +329,7 @@ async def crawl_with_playwright(start_url: str, max_pages: int = None, table=Non
             await asyncio.sleep(0.5)  # Be polite
         
         # Final state save
-        save_crawl_state(state_file, visited_urls, to_visit, stats)
+        save_crawl_state(state_file, visited_urls, to_visit, stats, processed_urls)
         await browser.close()
     
     print(f"\n✅ Crawling complete!")
@@ -311,7 +342,7 @@ async def crawl_with_playwright(start_url: str, max_pages: int = None, table=Non
 
 # --- PAGE PROCESSING AND INGESTION ---
 async def process_and_ingest_page(page: Dict, table):
-    """Process a single page and ingest it into the database."""
+    """Process a single page and ingest it into the database with URL tracking."""
     chunks = chunk_text(page['content'], max_chars=1000)
     
     if not chunks:
@@ -319,11 +350,14 @@ async def process_and_ingest_page(page: Dict, table):
     
     # Create documents for this page
     docs = []
-    for text_chunk in chunks:
+    for i, text_chunk in enumerate(chunks):
         if text_chunk.strip():
+            # Add chunk number for reference
+            chunk_ref = f"{page['url']}#chunk-{i+1}"
             docs.append({
                 "text": text_chunk,
                 "source_url": page['url'],
+                "chunk_ref": chunk_ref,
                 "page_title": page.get('title', ''),
                 "crawled_at": time.strftime("%Y-%m-%d %H:%M:%S")
             })
@@ -347,6 +381,7 @@ async def process_and_ingest_page(page: Dict, table):
                 "text": doc["text"], 
                 "vector": emb, 
                 "source_url": doc["source_url"],
+                "chunk_ref": doc["chunk_ref"],
                 "page_title": doc["page_title"],
                 "crawled_at": doc["crawled_at"]
             } 
@@ -370,7 +405,7 @@ if __name__ == "__main__":
     print("   https://help.zscaler.com/zia")
     print("   https://help.zscaler.com/zpa")
     print("   https://help.zscaler.com/zdx")
-    print("   https://help.zscaler.com/zia/getting-started")
+    print("   https://help.zscaler.com/ (main documentation site)")
     
     start_url = ""
     while True:
@@ -391,6 +426,13 @@ if __name__ == "__main__":
         # Ask about max pages
         max_pages_input = input("\n📄 Maximum pages to crawl (Enter for unlimited): ").strip()
         max_pages = int(max_pages_input) if max_pages_input.isdigit() else None
+        
+        # For Zscaler, ask if user wants to crawl all product documentation
+        additional_paths = []
+        if "zscaler.com" in start_url:
+            crawl_all = input("\n🔍 Crawl all Zscaler product documentation? (yes/no, default=yes): ").strip().lower()
+            if crawl_all != 'no':
+                additional_paths = ["/zia", "/zpa", "/zdx", "/zda", "/zcc", "/ztna"]
         
         # Choose crawler mode
         use_playwright = False
@@ -432,6 +474,8 @@ if __name__ == "__main__":
             print(f"\n{'=' * 60}")
             print(f"🚀 Starting crawler: {start_url}")
             print(f"📁 State file: {state_file}")
+            if additional_paths:
+                print(f"📂 Additional paths: {', '.join(additional_paths)}")
             print(f"{'=' * 60}")
             
             async def main():
@@ -440,7 +484,8 @@ if __name__ == "__main__":
                         start_url, 
                         max_pages=max_pages, 
                         table=table,
-                        state_file=state_file
+                        state_file=state_file,
+                        additional_paths=additional_paths
                     )
                 else:
                     print("❌ Basic crawler doesn't support JS sites.")
