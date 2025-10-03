@@ -1,6 +1,7 @@
 import os
 import lancedb
 import openai
+import re # Import the regular expressions library
 from dotenv import load_dotenv
 from lancedb.pydantic import LanceModel, Vector
 
@@ -11,7 +12,6 @@ openai.api_key = os.environ.get("OPENAI_API_KEY")
 db = lancedb.connect("./support_db")
 
 # --- UPDATED DATA MODEL ---
-# The model now includes a source_url field
 class SupportDoc(LanceModel):
     text: str
     vector: Vector(1536)
@@ -27,15 +27,13 @@ except Exception:
 
 # --- INGESTION LOGIC ---
 
-def chunk_text(text, chunk_size=1000, overlap=100):
-    """Splits text into overlapping chunks."""
-    chunks = []
-    start = 0
-    while start < len(text):
-        end = start + chunk_size
-        chunks.append(text[start:end])
-        start = end - overlap
-    return chunks
+def chunk_text_semantically(text: str):
+    """Splits text into chunks based on markdown headers."""
+    # We use a positive lookahead regex to split the text on markdown headers
+    # while keeping the header with its content.
+    chunks = re.split(r'(?=\n#\s)', text)
+    # Filter out any empty chunks that might result from the split
+    return [chunk.strip() for chunk in chunks if chunk.strip()]
 
 def ingest_folder(folder_path):
     """Reads all .txt files from a folder, extracts source URLs, and adds them to the database."""
@@ -55,8 +53,8 @@ def ingest_folder(folder_path):
                     content = "\n".join(lines[1:]) # Remove the URL line from the content
                     print(f"Found source URL: {source_url}")
 
-                chunks = chunk_text(content)
-                print(f"Split into {len(chunks)} chunks.")
+                chunks = chunk_text_semantically(content)
+                print(f"Split into {len(chunks)} semantic chunks.")
                 
                 # --- NEW: Associate URL with each chunk ---
                 for chunk in chunks:
@@ -86,4 +84,11 @@ def ingest_folder(folder_path):
 
 if __name__ == "__main__":
     knowledge_folder = "./knowledge"
+    # IMPORTANT: Delete the old database before running, to avoid duplicates
+    import shutil
+    db_path = "./support_db"
+    if os.path.exists(db_path):
+        print(f"Deleting old database at {db_path}...")
+        shutil.rmtree(db_path)
+    
     ingest_folder(knowledge_folder)
