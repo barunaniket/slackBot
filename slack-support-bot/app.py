@@ -3,6 +3,7 @@ import asyncio
 import logging
 import re
 import json
+import time
 from slack_bolt.async_app import AsyncApp
 from slack_bolt.adapter.socket_mode.async_handler import AsyncSocketModeHandler
 from dotenv import load_dotenv
@@ -54,6 +55,127 @@ def update_conversation_history(key: str, role: str, content: str):
     # Keep only the last 10 exchanges to manage token usage
     if len(conversation_memory[key]) > 20:
         conversation_memory[key] = conversation_memory[key][-20:]
+
+
+# --- TICKET SYSTEM COMMANDS ---
+
+@app.command("/create-ticket")
+async def show_ticket_modal(ack, body, client, logger):
+    """
+    Posts a message with a 'Create Ticket' button.
+    """
+    await ack()
+    try:
+        await client.chat_postMessage(
+            channel=body["channel_id"],
+            text="Create a new support ticket",
+            blocks=[
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": ":ticket: *Need assistance?*\n\nClick the button below to create a private ticket. Our support team will be with you shortly."
+                    }
+                },
+                {
+                    "type": "actions",
+                    "elements": [
+                        {
+                            "type": "button",
+                            "text": {
+                                "type": "plain_text",
+                                "text": "Create Ticket",
+                                "emoji": True
+                            },
+                            "value": "create_ticket",
+                            "action_id": "create_ticket_button"
+                        }
+                    ]
+                }
+            ]
+        )
+    except Exception as e:
+        logger.error(f"Error posting ticket creation message: {e}")
+
+@app.command("/close-ticket")
+async def handle_close_ticket(ack, body, client, logger):
+    """
+    Archives the channel if it's a ticket channel.
+    """
+    await ack()
+    channel_id = body["channel_id"]
+    user_id = body["user_id"]
+
+    try:
+        channel_info = await client.conversations_info(channel=channel_id)
+        channel_name = channel_info.get("channel", {}).get("name", "")
+
+        if channel_name.startswith("ticket-"):
+            await client.chat_postMessage(
+                channel=channel_id,
+                text=f"Ticket closed by <@{user_id}>. This channel will now be archived."
+            )
+            await client.conversations_archive(channel=channel_id)
+            logger.info(f"Ticket channel {channel_name} ({channel_id}) archived by {user_id}.")
+        else:
+            await client.chat_postEphemeral(
+                channel=channel_id,
+                user=user_id,
+                text=":x: This command can only be used in a ticket channel."
+            )
+    except Exception as e:
+        logger.error(f"Error closing ticket: {e}")
+        await client.chat_postEphemeral(
+            channel=channel_id,
+            user=user_id,
+            text=f":x: Sorry, I couldn't close the ticket. Error: `{e}`"
+        )
+
+# --- TICKET SYSTEM ACTION HANDLER ---
+
+@app.action("create_ticket_button")
+async def handle_create_ticket_button(ack, body, client, say, logger):
+    """
+    Handles the 'Create Ticket' button click event.
+    """
+    await ack()
+    user_id = body["user"]["id"]
+    user_name = body["user"]["username"]
+    logger.info(f"User {user_name} ({user_id}) clicked the 'Create Ticket' button.")
+
+    try:
+        channel_name = f"ticket-{user_name}-{int(time.time())}"
+        response = await client.conversations_create(
+            name=channel_name,
+            is_private=True
+        )
+        channel_id = response["channel"]["id"]
+        logger.info(f"Created private channel: {channel_name} ({channel_id})")
+
+        await client.conversations_invite(
+            channel=channel_id,
+            users=user_id
+        )
+
+        await client.chat_postMessage(
+            channel=channel_id,
+            text=f"Hi <@{user_id}>! Welcome to your private support ticket. Please describe your issue in detail, and our support team will be with you shortly."
+        )
+
+        await client.chat_postEphemeral(
+            channel=body["channel"]["id"],
+            user=user_id,
+            text=f"I've created a private ticket for you right here 👉 <#{channel_id}>"
+        )
+
+    except Exception as e:
+        logger.error(f"Error creating ticket: {e}")
+        await client.chat_postEphemeral(
+            channel=body["channel"]["id"],
+            user=user_id,
+            text=f":x: Sorry, I couldn't create a ticket for you. Please contact an admin. Error: `{e}`"
+        )
+
 
 # --- CORE LOGIC HELPER ---
 async def _process_mention(event, say, context, logger, query: str, channel_id: str, thread_ts: str = None):
@@ -240,12 +362,26 @@ async def handle_app_mention(event, say, context, logger):
     await _process_mention(event, say, context, logger, query, event["channel"], event.get("thread_ts"))
 
 @app.event("message")
-async def handle_message_event(event, say, context, logger):
-    if event.get("subtype") == "message_changed":
-        new_text = event["message"]["text"]
-        if f"<@{context.bot_user_id}>" in new_text:
-            query = new_text.split(f"<@{context.bot_user_id}>")[-1].strip()
-            await _process_mention(event, say, context, logger, query, event["channel"], event["message"].get("thread_ts"))
+async def handle_message_event(event, client, say, context, logger):
+    # Ignore messages from bots, and subtypes like channel joins/leaves
+    if event.get("bot_id") or event.get("subtype"):
+        return
+
+    # Don't process if it's an explicit mention (will be handled by app_mention handler)
+    if f"<@{context.bot_user_id}>" in event["text"]:
+        return
+
+    channel_id = event["channel"]
+    try:
+        # Check if the message is in a ticket channel
+        channel_info = await client.conversations_info(channel=channel_id)
+        if channel_info["ok"] and channel_info["channel"]["name"].startswith("ticket-"):
+            logger.info(f"Processing message in ticket channel {channel_id}")
+            query = event["text"].strip()
+            await _process_mention(event, say, context, logger, query, channel_id, event.get("thread_ts"))
+    except Exception as e:
+        # Avoid spamming channels if there's an API error
+        logger.error(f"Error processing message in ticket channel: {e}")
 
 # --- CORE LOGIC FUNCTIONS (THE BRAIN) ---
 async def reasoning_engine(query: str, history: list, user_id: str):
@@ -516,7 +652,7 @@ async def search_knowledge_base(query: str):
         try:
             relevance_response = await asyncio.to_thread(
                 openai.chat.completions.create,
-                model="gpt-5",
+                model="gpt-3.5-turbo",
                 messages=[
                     {"role": "system", "content": "You are a relevance checker. Respond with only YES or NO."},
                     {"role": "user", "content": relevance_check_prompt}
