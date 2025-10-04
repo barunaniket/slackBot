@@ -516,7 +516,7 @@ async def search_knowledge_base(query: str):
         try:
             relevance_response = await asyncio.to_thread(
                 openai.chat.completions.create,
-                model="gpt-3.5-turbo",
+                model="gpt-5",
                 messages=[
                     {"role": "system", "content": "You are a relevance checker. Respond with only YES or NO."},
                     {"role": "user", "content": relevance_check_prompt}
