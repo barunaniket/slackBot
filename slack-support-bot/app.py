@@ -162,19 +162,41 @@ async def handle_create_ticket_button(ack, body, client, say, logger):
             text=f"Hi <@{user_id}>! Welcome to your private support ticket. Please describe your issue in detail, and our support team will be with you shortly."
         )
 
-        await client.chat_postEphemeral(
-            channel=body["channel"]["id"],
-            user=user_id,
-            text=f"I've created a private ticket for you right here 👉 <#{channel_id}>"
-        )
+        # Check if the original interaction was in a DM or a channel
+        is_dm = body.get("channel", {}).get("is_im", False)
+        
+        if is_dm:
+            # If it was a DM, send a DM back
+            await client.chat_postMessage(
+                channel=user_id,  # In DMs, the channel is the user ID
+                text=f"I've created a private ticket for you right here 👉 <#{channel_id}>"
+            )
+        else:
+            # If it was in a channel, send an ephemeral message
+            await client.chat_postEphemeral(
+                channel=body["channel"]["id"],
+                user=user_id,
+                text=f"I've created a private ticket for you right here 👉 <#{channel_id}>"
+            )
 
     except Exception as e:
         logger.error(f"Error creating ticket: {e}")
-        await client.chat_postEphemeral(
-            channel=body["channel"]["id"],
-            user=user_id,
-            text=f":x: Sorry, I couldn't create a ticket for you. Please contact an admin. Error: `{e}`"
-        )
+        # Check if the original interaction was in a DM or a channel
+        is_dm = body.get("channel", {}).get("is_im", False)
+        
+        if is_dm:
+            # If it was a DM, send a DM back
+            await client.chat_postMessage(
+                channel=user_id,
+                text=f":x: Sorry, I couldn't create a ticket for you. Please contact an admin. Error: `{e}`"
+            )
+        else:
+            # If it was in a channel, send an ephemeral message
+            await client.chat_postEphemeral(
+                channel=body["channel"]["id"],
+                user=user_id,
+                text=f":x: Sorry, I couldn't create a ticket for you. Please contact an admin. Error: `{e}`"
+            )
 
 
 # --- CORE LOGIC HELPER ---
@@ -281,6 +303,53 @@ async def _process_mention(event, say, context, logger, query: str, channel_id: 
             )
             update_conversation_history(memory_key, "user", query)
             update_conversation_history(memory_key, "assistant", "Greeting acknowledged.")
+        elif intent == "help":
+            await say(
+                blocks=[
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": f"Hello <@{user_id}>! I'm here to help. :wave:"
+                        }
+                    },
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": "Here's what I can do for you:\n• Answer technical questions\n• Help with troubleshooting\n• Provide product information\n• Create support tickets\n• Escalate to human agents"
+                        }
+                    },
+                    {
+                        "type": "divider"
+                    },
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": "*Commands:*\n• `help` - Show this help message\n• `escalate` - Escalate to a human agent\n• `create-ticket` - Create a private support ticket"
+                        }
+                    },
+                    {
+                        "type": "actions",
+                        "elements": [
+                            {
+                                "type": "button",
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": "Create Ticket",
+                                    "emoji": True
+                                },
+                                "value": "create_ticket",
+                                "action_id": "create_ticket_button"
+                            }
+                        ]
+                    }
+                ],
+                **reply_params
+            )
+            update_conversation_history(memory_key, "user", query)
+            update_conversation_history(memory_key, "assistant", "Help information provided.")
         else:
             await say(
                 blocks=[
@@ -340,16 +409,16 @@ async def update_home_tab(client, event, logger):
             "blocks": [
                 {"type": "header", "text": {"type": "plain_text", "text": "Welcome to KaizenDev Support! 🚀"}},
                 {"type": "divider"},
-                {"type": "section", "text": {"type": "mrkdwn", "text": "I'm your AI support assistant. Mention me in any channel with your questions, and I'll help you find answers from our knowledge base or provide general assistance."}},
+                {"type": "section", "text": {"type": "mrkdwn", "text": "I'm your AI support assistant. You can interact with me in two ways:\n\n• Mention me in any channel with your questions\n• Send me a direct message (DM) for private support\n\nI'll help you find answers from our knowledge base or provide general assistance."}},
                 {"type": "divider"},
                 {"type": "section", "text": {"type": "mrkdwn", "text": "*How to use me:*"}},
-                {"type": "section", "text": {"type": "mrkdwn", "text": "• Simply mention me with your question: `@YourBot How do I reset my password?`\n• I'll search our knowledge base first\n• If I can't find relevant info, I'll use my general knowledge\n• I always cite my sources when using the knowledge base"}},
+                {"type": "section", "text": {"type": "mrkdwn", "text": "• In a channel: `@YourBot How do I reset my password?`\n• In a DM: Just type your question directly\n• I'll search our knowledge base first\n• If I can't find relevant info, I'll use my general knowledge\n• I always cite my sources when using the knowledge base"}},
                 {"type": "divider"},
                 {"type": "section", "text": {"type": "mrkdwn", "text": "*Examples:*"}},
                 {"type": "section", "text": {"type": "mrkdwn", "text": "• How do I reset my password?\n• What are the system requirements?\n• I'm having trouble with the installation\n• How do I configure the firewall settings?"}},
                 {"type": "divider"},
                 {"type": "section", "text": {"type": "mrkdwn", "text": "*Commands:*"}},
-                {"type": "section", "text": {"type": "mrkdwn", "text": "• `@YourBot help` - Get help\n• `@YourBot escalate` - Escalate to human agent\n• `@YourBot hello` - Start a conversation"}},
+                {"type": "section", "text": {"type": "mrkdwn", "text": "• `help` - Get help\n• `escalate` - Escalate to human agent\n• `hello` - Start a conversation\n• `create-ticket` - Create a private support ticket"}},
                 {"type": "context", "elements": [{"type": "mrkdwn", "text": "Powered by AI | Knowledge Base + General Intelligence"}]}
             ]
         })
@@ -373,15 +442,66 @@ async def handle_message_event(event, client, say, context, logger):
 
     channel_id = event["channel"]
     try:
-        # Check if the message is in a ticket channel
+        # Get channel information to check if it's a direct message or ticket channel
         channel_info = await client.conversations_info(channel=channel_id)
-        if channel_info["ok"] and channel_info["channel"]["name"].startswith("ticket-"):
+        
+        # Check if it's a direct message (IM) channel
+        if channel_info["ok"] and channel_info["channel"]["is_im"]:
+            logger.info(f"Processing direct message from user {event['user']}")
+            query = event["text"].strip()
+            await _process_mention(event, say, context, logger, query, channel_id, event.get("thread_ts"))
+        # Check if it's a ticket channel (existing functionality)
+        elif channel_info["ok"] and channel_info["channel"]["name"].startswith("ticket-"):
             logger.info(f"Processing message in ticket channel {channel_id}")
             query = event["text"].strip()
             await _process_mention(event, say, context, logger, query, channel_id, event.get("thread_ts"))
     except Exception as e:
         # Avoid spamming channels if there's an API error
-        logger.error(f"Error processing message in ticket channel: {e}")
+        logger.error(f"Error processing message: {e}")
+
+@app.event("im_open")  # Event fired when a user opens a DM with the bot
+async def handle_dm_opened(event, client, logger):
+    user_id = event["user"]
+    try:
+        await client.chat_postMessage(
+            channel=user_id,
+            blocks=[
+                {
+                    "type": "header",
+                    "text": {
+                        "type": "plain_text",
+                        "text": "Welcome to KaizenDev Support! 🚀"
+                    }
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "Hi there! I'm your AI support assistant. How can I help you today?\n\nYou can ask me questions about:\n• Technical issues\n• Product features\n• Troubleshooting\n• General support\n\nOr type `help` to see available commands."
+                    }
+                },
+                {
+                    "type": "divider"
+                },
+                {
+                    "type": "actions",
+                    "elements": [
+                        {
+                            "type": "button",
+                            "text": {
+                                "type": "plain_text",
+                                "text": "Create Ticket",
+                                "emoji": True
+                            },
+                            "value": "create_ticket",
+                            "action_id": "create_ticket_button"
+                        }
+                    ]
+                }
+            ]
+        )
+    except Exception as e:
+        logger.error(f"Error sending welcome message in DM: {e}")
 
 # --- CORE LOGIC FUNCTIONS (THE BRAIN) ---
 async def reasoning_engine(query: str, history: list, user_id: str):
@@ -696,7 +816,7 @@ async def search_knowledge_base(query: str):
 
 async def classify_intent(text: str):
     prompt = f"""
-    You are an expert at classifying user intent. Classify the message into ONE of these categories: 'question', 'escalation', 'follow_up', 'greeting', or 'other'.
+    You are an expert at classifying user intent. Classify the message into ONE of these categories: 'question', 'escalation', 'follow_up', 'greeting', 'help', or 'other'.
     Your response must be a single word.
 
     Examples:
@@ -705,6 +825,8 @@ async def classify_intent(text: str):
     Message: "I need to speak to a manager now!" -> Intent: escalation
     Message: "thanks, that worked" -> Intent: follow_up
     Message: "hello there" -> Intent: greeting
+    Message: "help" -> Intent: help
+    Message: "what can you do?" -> Intent: help
     Message: "what's the weather like?" -> Intent: other
     ---
     Classify the following message:
@@ -716,7 +838,7 @@ async def classify_intent(text: str):
             openai.chat.completions.create,
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "You are an expert at classifying user intent. Respond with only a single word: question, escalation, follow_up, greeting, or other."},
+                {"role": "system", "content": "You are an expert at classifying user intent. Respond with only a single word: question, escalation, follow_up, greeting, help, or other."},
                 {"role": "user", "content": prompt}
             ],
             temperature=0.0,
@@ -724,7 +846,7 @@ async def classify_intent(text: str):
         intent = response.choices[0].message.content.strip().lower()
         intent = ''.join(c for c in intent if c.isalpha())
         
-        valid_intents = ["question", "escalation", "follow_up", "greeting", "other"]
+        valid_intents = ["question", "escalation", "follow_up", "greeting", "help", "other"]
         return intent if intent in valid_intents else "other"
     except Exception as e:
         logger.error(f"Error classifying intent: {e}")
@@ -736,7 +858,7 @@ async def main():
     print("\n" + "="*80)
     print("🚀 STARTING KAIZENDEV SUPPORT BOT")
     print("="*80)
-    print("Bot is now running. Mention the bot in Slack to ask questions.")
+    print("Bot is now running. Mention the bot in Slack or send a DM to ask questions.")
     print("Detailed logs will be shown here for each query processed.")
     print("="*80 + "\n")
     
