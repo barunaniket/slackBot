@@ -128,6 +128,6 @@ The bot will connect to your Slack workspace via Socket Mode and will be ready t
 ## Configuration
 
   * **Crawling Behavior:** Modify the `should_crawl_url` function and `main_selectors` list in `crawler.py` to customize which links are followed and which HTML elements are targeted for content extraction.
-  * **AI Model:** The GPT model can be changed in the `reasoning_engine` function in `app.py` (e.g., from `gpt-4-turbo-preview` to another model).
+  * **AI Model:** The GPT model can be changed in the `reasoning_engine` function in `app.py` (e.g., from `gpt-5` to another model).
   * **Relevance Threshold:** The `RELEVANCE_THRESHOLD` in `search_knowledge_base` within `app.py` can be adjusted to make the knowledge base search more or less strict.
   * **Conversational Memory:** The number of past exchanges the bot remembers can be configured in the `update_conversation_history` function in `app.py`.

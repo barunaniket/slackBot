@@ -7,23 +7,18 @@ import time
 from slack_bolt.async_app import AsyncApp
 from slack_bolt.adapter.socket_mode.async_handler import AsyncSocketModeHandler
 from dotenv import load_dotenv
-
-# Import AI and DB libraries
 import lancedb
 import openai
 from lancedb.pydantic import LanceModel, Vector
 
-# --- LOGGING SETUP ---
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 load_dotenv()
 
-# --- INITIALIZATION ---
 app = AsyncApp(token=os.environ.get("SLACK_BOT_TOKEN"))
 openai.api_key = os.environ.get("OPENAI_API_KEY")
 db = lancedb.connect("./support_db")
 
-# --- DATA MODEL ---
 class SupportDoc(LanceModel):
     text: str
     vector: Vector(1536)
@@ -39,7 +34,6 @@ except Exception:
     table = db.create_table("support_docs", schema=SupportDoc)
     logger.info("LanceDB table 'support_docs' created successfully.")
 
-# --- THE BOT'S "BRAIN": LONG-TERM CONVERSATIONAL MEMORY ---
 conversation_memory = {}
 
 def get_conversation_history(key: str):
@@ -52,12 +46,9 @@ def update_conversation_history(key: str, role: str, content: str):
         conversation_memory[key] = []
     conversation_memory[key].append({"role": role, "content": content})
     
-    # Keep only the last 10 exchanges to manage token usage
     if len(conversation_memory[key]) > 20:
         conversation_memory[key] = conversation_memory[key][-20:]
 
-
-# --- TICKET SYSTEM COMMANDS ---
 
 @app.command("/create-ticket")
 async def show_ticket_modal(ack, body, client, logger):
@@ -131,7 +122,6 @@ async def handle_close_ticket(ack, body, client, logger):
             text=f":x: Sorry, I couldn't close the ticket. Error: `{e}`"
         )
 
-# --- TICKET SYSTEM ACTION HANDLER ---
 
 @app.action("create_ticket_button")
 async def handle_create_ticket_button(ack, body, client, say, logger):
@@ -162,17 +152,14 @@ async def handle_create_ticket_button(ack, body, client, say, logger):
             text=f"Hi <@{user_id}>! Welcome to your private support ticket. Please describe your issue in detail, and our support team will be with you shortly."
         )
 
-        # Check if the original interaction was in a DM or a channel
         is_dm = body.get("channel", {}).get("is_im", False)
         
         if is_dm:
-            # If it was a DM, send a DM back
             await client.chat_postMessage(
-                channel=user_id,  # In DMs, the channel is the user ID
+                channel=user_id,
                 text=f"I've created a private ticket for you right here 👉 <#{channel_id}>"
             )
         else:
-            # If it was in a channel, send an ephemeral message
             await client.chat_postEphemeral(
                 channel=body["channel"]["id"],
                 user=user_id,
@@ -181,17 +168,14 @@ async def handle_create_ticket_button(ack, body, client, say, logger):
 
     except Exception as e:
         logger.error(f"Error creating ticket: {e}")
-        # Check if the original interaction was in a DM or a channel
         is_dm = body.get("channel", {}).get("is_im", False)
         
         if is_dm:
-            # If it was a DM, send a DM back
             await client.chat_postMessage(
                 channel=user_id,
                 text=f":x: Sorry, I couldn't create a ticket for you. Please contact an admin. Error: `{e}`"
             )
         else:
-            # If it was in a channel, send an ephemeral message
             await client.chat_postEphemeral(
                 channel=body["channel"]["id"],
                 user=user_id,
@@ -199,7 +183,6 @@ async def handle_create_ticket_button(ack, body, client, say, logger):
             )
 
 
-# --- CORE LOGIC HELPER ---
 async def _process_mention(event, say, context, logger, query: str, channel_id: str, thread_ts: str = None):
     try:
         if thread_ts:
@@ -211,7 +194,6 @@ async def _process_mention(event, say, context, logger, query: str, channel_id: 
 
         user_id = event.get('user') or event.get('message', {}).get('user')
         
-        # Enhanced logging for query processing
         print("\n" + "="*80)
         print(f"🔍 PROCESSING NEW QUERY")
         print("="*80)
@@ -400,7 +382,6 @@ async def _process_mention(event, say, context, logger, query: str, channel_id: 
             channel=channel_id
         )
 
-# --- SLACK EVENT HANDLERS ---
 @app.event("app_home_opened")
 async def update_home_tab(client, event, logger):
     try:
@@ -432,34 +413,28 @@ async def handle_app_mention(event, say, context, logger):
 
 @app.event("message")
 async def handle_message_event(event, client, say, context, logger):
-    # Ignore messages from bots, and subtypes like channel joins/leaves
     if event.get("bot_id") or event.get("subtype"):
         return
 
-    # Don't process if it's an explicit mention (will be handled by app_mention handler)
     if f"<@{context.bot_user_id}>" in event["text"]:
         return
 
     channel_id = event["channel"]
     try:
-        # Get channel information to check if it's a direct message or ticket channel
         channel_info = await client.conversations_info(channel=channel_id)
         
-        # Check if it's a direct message (IM) channel
         if channel_info["ok"] and channel_info["channel"]["is_im"]:
             logger.info(f"Processing direct message from user {event['user']}")
             query = event["text"].strip()
             await _process_mention(event, say, context, logger, query, channel_id, event.get("thread_ts"))
-        # Check if it's a ticket channel (existing functionality)
         elif channel_info["ok"] and channel_info["channel"]["name"].startswith("ticket-"):
             logger.info(f"Processing message in ticket channel {channel_id}")
             query = event["text"].strip()
             await _process_mention(event, say, context, logger, query, channel_id, event.get("thread_ts"))
     except Exception as e:
-        # Avoid spamming channels if there's an API error
         logger.error(f"Error processing message: {e}")
 
-@app.event("im_open")  # Event fired when a user opens a DM with the bot
+@app.event("im_open")
 async def handle_dm_opened(event, client, logger):
     user_id = event["user"]
     try:
@@ -503,12 +478,10 @@ async def handle_dm_opened(event, client, logger):
     except Exception as e:
         logger.error(f"Error sending welcome message in DM: {e}")
 
-# --- CORE LOGIC FUNCTIONS (THE BRAIN) ---
 async def reasoning_engine(query: str, history: list, user_id: str):
     print(f"🔎 Searching knowledge base for: '{query}'")
     search_results = await search_knowledge_base(query)
     
-    # Log the search results
     print("\n📚 KNOWLEDGE BASE SEARCH RESULTS:")
     print("-"*80)
     if "No relevant information found" in search_results:
@@ -516,17 +489,14 @@ async def reasoning_engine(query: str, history: list, user_id: str):
         has_relevant_info = False
     else:
         print("✅ Found relevant information in the knowledge base")
-        # Show a preview of the results (first 200 chars)
         preview = search_results[:200] + "..." if len(search_results) > 200 else search_results
         print(f"Preview: {preview}")
         has_relevant_info = True
     print("-"*80)
     
-    history_str = "\n".join([f"{h['role'].capitalize()}: {h['content']}" for h in history[-6:]])  # Only use last 6 exchanges
+    history_str = "\n".join([f"{h['role'].capitalize()}: {h['content']}" for h in history[-6:]])
     
-    # Construct the prompt based on whether we have relevant info
     if has_relevant_info:
-        # Knowledge base prompt, which requires citing the provided source
         prompt = f"""
         You are a world-class expert support assistant for KaizenDev.
         Your goal is to provide a detailed answer based ONLY on the provided context from the knowledge base.
@@ -556,7 +526,6 @@ async def reasoning_engine(query: str, history: list, user_id: str):
         **Your Detailed Response based ONLY on the Provided Context:**
         """
     else:
-        # General knowledge prompt, without asking for URLs
         prompt = f"""
         You are a world-class expert support assistant for KaizenDev.
         The user <@{user_id}> has asked a question for which there is no specific information in your internal knowledge base.
@@ -583,10 +552,8 @@ async def reasoning_engine(query: str, history: list, user_id: str):
         **Your General Response:**
         """
     
-    # Log the prompt being sent to OpenAI
     print("\n📤 PROMPT SENT TO OPENAI:")
     print("-"*80)
-    # Show a preview of the prompt (first 500 chars)
     prompt_preview = prompt[:500] + "..." if len(prompt) > 500 else prompt
     print(f"Prompt preview: {prompt_preview}")
     print(f"Full prompt length: {len(prompt)} characters")
@@ -595,7 +562,7 @@ async def reasoning_engine(query: str, history: list, user_id: str):
     try:
         response = await asyncio.to_thread(
             openai.chat.completions.create,
-            model="gpt-4-turbo-preview",
+            model="gpt-5",
             messages=[
                 {"role": "system", "content": "You are a helpful expert assistant. Format your responses for readability in Slack with appropriate use of bolding, bullet points, and sections."},
                 {"role": "user", "content": prompt}
@@ -605,16 +572,13 @@ async def reasoning_engine(query: str, history: list, user_id: str):
         )
         answer = response.choices[0].message.content.strip()
         
-        # Log the response from OpenAI
         print("\n📥 RESPONSE FROM OPENAI:")
         print("-"*80)
-        # Show a preview of the response (first 300 chars)
         response_preview = answer[:300] + "..." if len(answer) > 300 else answer
         print(f"Response preview: {response_preview}")
         print(f"Full response length: {len(answer)} characters")
         print("-"*80)
         
-        # Format for Slack
         formatted_answer = format_for_slack(answer, has_relevant_info)
         
         return formatted_answer
@@ -644,33 +608,24 @@ async def reasoning_engine(query: str, history: list, user_id: str):
 
 def format_for_slack(text: str, has_relevant_info: bool) -> dict:
     """Format text for better readability in Slack with proper blocks."""
-    # Convert markdown bold to Slack bold
     text = re.sub(r'\*\*(.*?)\*\*', r'*\1*', text)
     
-    # Convert markdown headers to Slack bold
     text = re.sub(r'^### (.*?)$', r'*\1*', text, flags=re.MULTILINE)
     text = re.sub(r'^## (.*?)$', r'*\1*', text, flags=re.MULTILINE)
     text = re.sub(r'^# (.*?)$', r'*\1*', text, flags=re.MULTILINE)
     
-    # Ensure bullet points are formatted correctly
     text = re.sub(r'^- (.*?)$', r'• \1', text, flags=re.MULTILINE)
     
-    # Split the text into sections
     sections = text.split('\n\n')
     blocks = []
     
-    # Process each section
     for section in sections:
         if section.strip():
-            # Check if it's a references section - only include if we have relevant info
             if (section.strip().startswith("References:") or section.strip().startswith("*References:*")) and has_relevant_info:
-                # Format references as a separate section with better formatting
                 refs_text = section.replace("References:", "").replace("*References:*", "").strip()
                 
-                # Add a divider before references
                 blocks.append({"type": "divider"})
                 
-                # Add references header
                 blocks.append({
                     "type": "section",
                     "text": {
@@ -679,23 +634,18 @@ def format_for_slack(text: str, has_relevant_info: bool) -> dict:
                     }
                 })
                 
-                # Process each reference line
                 ref_lines = refs_text.split('\n')
                 for ref_line in ref_lines:
                     ref_line = ref_line.strip()
                     if ref_line:
-                        # Extract URL if present
                         url_match = re.search(r'(https?://[^\s]+)', ref_line)
                         if url_match:
                             url = url_match.group(1)
-                            # Create a clean title from the URL
                             title = ref_line.replace(url, "").strip()
                             if not title:
-                                # If no title, use the URL path as title
                                 parsed_url = re.sub(r'https?://', '', url)
                                 title = parsed_url.split('/')[0]
                             
-                            # Format as a button-like element
                             blocks.append({
                                 "type": "section",
                                 "text": {
@@ -704,7 +654,6 @@ def format_for_slack(text: str, has_relevant_info: bool) -> dict:
                                 }
                             })
                         else:
-                            # Regular text reference
                             blocks.append({
                                 "type": "section",
                                 "text": {
@@ -713,7 +662,6 @@ def format_for_slack(text: str, has_relevant_info: bool) -> dict:
                                 }
                             })
             elif not (section.strip().startswith("References:") or section.strip().startswith("*References:*")):
-                # Regular content section (not references)
                 blocks.append({
                     "type": "section",
                     "text": {
@@ -722,7 +670,6 @@ def format_for_slack(text: str, has_relevant_info: bool) -> dict:
                     }
                 })
     
-    # Add footer if no relevant info
     if not has_relevant_info:
         blocks.append({"type": "divider"})
         blocks.append({
@@ -738,8 +685,7 @@ def format_for_slack(text: str, has_relevant_info: bool) -> dict:
     return {"blocks": blocks}
 
 async def search_knowledge_base(query: str):
-    # Increased threshold for better relevance - more strict
-    RELEVANCE_THRESHOLD = 0.5  # Lowered threshold for more strict matching
+    RELEVANCE_THRESHOLD = 0.5
     try:
         print(f"🔍 Creating embedding for query: '{query}'")
         response = await asyncio.to_thread(openai.embeddings.create, input=query, model="text-embedding-ada-002")
@@ -754,11 +700,8 @@ async def search_knowledge_base(query: str):
         if relevant_results.empty:
             return "No relevant information found in the knowledge base."
         
-        # Additional check: verify if the results are actually relevant to the query
-        # This is important for cases where the vector search returns results that aren't semantically relevant
         print(f"🔍 Checking if results are actually relevant to the query...")
         
-        # Create a prompt to check relevance
         relevance_check_prompt = f"""
         Given the user query: "{query}"
         
@@ -772,7 +715,7 @@ async def search_knowledge_base(query: str):
         try:
             relevance_response = await asyncio.to_thread(
                 openai.chat.completions.create,
-                model="gpt-3.5-turbo",
+                model="gpt-5",
                 messages=[
                     {"role": "system", "content": "You are a relevance checker. Respond with only YES or NO."},
                     {"role": "user", "content": relevance_check_prompt}
@@ -788,9 +731,7 @@ async def search_knowledge_base(query: str):
                 return "No relevant information found in the knowledge base."
         except Exception as e:
             print(f"⚠️ Error in relevance check: {e}")
-            # If relevance check fails, continue with the results
-        
-        # Group by source URL to avoid duplication
+      
         grouped_results = {}
         for _, row in relevant_results.iterrows():
             url = row['source_url']
@@ -800,10 +741,8 @@ async def search_knowledge_base(query: str):
                     'content': row['text']
                 }
             else:
-                # Append content if we already have this URL
                 grouped_results[url]['content'] += "\n\n" + row['text']
         
-        # Format the results
         context_list = []
         for url, data in grouped_results.items():
             context_list.append(f"Source: {url}\nTitle: {data['title']}\nContent: {data['content']}")
@@ -836,7 +775,7 @@ async def classify_intent(text: str):
     try:
         response = await asyncio.to_thread(
             openai.chat.completions.create,
-            model="gpt-3.5-turbo",
+            model="gpt-5",
             messages=[
                 {"role": "system", "content": "You are an expert at classifying user intent. Respond with only a single word: question, escalation, follow_up, greeting, help, or other."},
                 {"role": "user", "content": prompt}
@@ -852,7 +791,6 @@ async def classify_intent(text: str):
         logger.error(f"Error classifying intent: {e}")
         return "other"
 
-# --- MAIN EXECUTION ---
 async def main():
     logger.info("Starting KaizenDev Support Bot...")
     print("\n" + "="*80)
