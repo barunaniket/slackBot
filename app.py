@@ -562,7 +562,7 @@ async def reasoning_engine(query: str, history: list, user_id: str):
     try:
         response = await asyncio.to_thread(
             openai.chat.completions.create,
-            model="gpt-5",
+            model="gpt-4-turbo-preview",
             messages=[
                 {"role": "system", "content": "You are a helpful expert assistant. Format your responses for readability in Slack with appropriate use of bolding, bullet points, and sections."},
                 {"role": "user", "content": prompt}
@@ -685,7 +685,7 @@ def format_for_slack(text: str, has_relevant_info: bool) -> dict:
     return {"blocks": blocks}
 
 async def search_knowledge_base(query: str):
-    RELEVANCE_THRESHOLD = 0.5
+    RELEVANCE_THRESHOLD = 0.4
     try:
         print(f"🔍 Creating embedding for query: '{query}'")
         response = await asyncio.to_thread(openai.embeddings.create, input=query, model="text-embedding-ada-002")
@@ -715,7 +715,7 @@ async def search_knowledge_base(query: str):
         try:
             relevance_response = await asyncio.to_thread(
                 openai.chat.completions.create,
-                model="gpt-5",
+                model="gpt-3.5-turbo",
                 messages=[
                     {"role": "system", "content": "You are a relevance checker. Respond with only YES or NO."},
                     {"role": "user", "content": relevance_check_prompt}
@@ -775,7 +775,7 @@ async def classify_intent(text: str):
     try:
         response = await asyncio.to_thread(
             openai.chat.completions.create,
-            model="gpt-5",
+            model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "You are an expert at classifying user intent. Respond with only a single word: question, escalation, follow_up, greeting, help, or other."},
                 {"role": "user", "content": prompt}
