@@ -1,0 +1,267 @@
+https://docs.ultralytics.com/vi
+中文
+|
+한국어
+|
+日本語
+|
+Русский
+|
+Deutsch
+|
+Français
+|
+Español
+|
+Português
+|
+Türkçe
+|
+Tiếng Việt
+|
+العربية
+Trang chủ
+Giới thiệu
+Ultralytics
+YOLO11
+, phiên bản mới nhất của mô hình phân đoạn ảnh và phát hiện đối tượng theo thời gian thực đã được công nhận. YOLO11 được xây dựng dựa trên những tiến bộ vượt bậc trong
+học sâu
+và
+thị giác máy tính
+, mang lại hiệu suất vô song về tốc độ và
+độ chính xác
+. Thiết kế hợp lý của nó làm cho nó phù hợp với nhiều ứng dụng khác nhau và dễ dàng thích ứng với các nền tảng phần cứng khác nhau, từ thiết bị biên đến API đám mây.
+Khám phá Ultralytics Docs, một tài nguyên toàn diện được thiết kế để giúp bạn hiểu và sử dụng các tính năng và khả năng của nó. Cho dù bạn là một người thực hành
+máy học
+dày dặn kinh nghiệm hay người mới làm quen với lĩnh vực này, trung tâm này nhằm mục đích tối đa hóa tiềm năng của YOLO trong các dự án của bạn.
+Bắt đầu từ đâu
+Bắt đầu
+Cài đặt
+ultralytics
+với pip và thiết lập và chạy trong vài phút để huấn luyện mô hình YOLO
+Bắt đầu nhanh
+Dự đoán
+Dự đoán trên hình ảnh, video và luồng mới với YOLO
+Tìm hiểu thêm
+Huấn luyện mô hình
+Huấn luyện một mô hình YOLO mới trên bộ dữ liệu tùy chỉnh của riêng bạn từ đầu hoặc tải và huấn luyện trên một mô hình đã được huấn luyện trước.
+Tìm hiểu thêm
+Khám phá các Tác vụ Thị giác Máy tính
+Khám phá các tác vụ YOLO như detect (phát hiện), segment (phân đoạn), classify (phân loại), pose (tư thế), OBB và track (theo dõi)
+Khám phá các tác vụ
+Khám phá YOLO11 🚀
+Khám phá các mô hình YOLO11 tiên tiến nhất mới nhất của Ultralytics và khả năng của chúng
+YOLO11 Người mẫu 🚀
+Mã nguồn mở, AGPL-3.0
+Ultralytics cung cấp hai giấy phép YOLO: AGPL-3.0 và Enterprise. Khám phá YOLO trên
+GitHub
+.
+Giấy phép YOLO
+Xem:
+Cách Huấn luyện mô hình YOLO11 trên Bộ Dữ liệu Tùy chỉnh của Bạn trong
+Google Colab
+.
+YOLO: Lịch sử tóm tắt
+YOLO
+(You Only Look Once), một mô hình
+phát hiện đối tượng
+và
+phân đoạn hình ảnh
+phổ biến, được phát triển bởi Joseph Redmon và Ali Farhadi tại Đại học Washington. Ra mắt vào năm 2015, YOLO đã trở nên phổ biến nhờ tốc độ và độ chính xác cao.
+YOLOv2
+, được phát hành vào năm 2016, đã cải thiện mô hình ban đầu bằng cách kết hợp chuẩn hóa hàng loạt, hộp neo và các cụm chiều.
+YOLOv3
+, ra mắt năm 2018, tiếp tục nâng cao hiệu suất của mô hình bằng cách sử dụng mạng xương sống hiệu quả hơn, nhiều neo hơn và spatial pyramid pooling.
+YOLOv4
+được phát hành vào năm 2020, giới thiệu các cải tiến như
+tăng cường dữ liệu
+Mosaic, một đầu dò tìm không cần neo mới và một
+hàm mất mát
+mới.
+YOLOv5
+tiếp tục cải thiện hiệu suất của mô hình và bổ sung các tính năng mới như tối ưu hóa siêu tham số, tích hợp theo dõi thử nghiệm và tự động xuất sang các định dạng xuất phổ biến.
+YOLOv6
+đã được
+Meituan
+mở mã nguồn vào năm 2022 và được sử dụng trong nhiều robot giao hàng tự động của công ty.
+YOLOv7
+đã thêm các tác vụ bổ sung như ước tính tư thế trên bộ dữ liệu điểm chính COCO.
+YOLOv8
+được phát hành vào năm 2023 bởi Ultralytics, giới thiệu các tính năng và cải tiến mới để nâng cao hiệu suất, tính linh hoạt và hiệu quả, hỗ trợ đầy đủ các tác vụ AI về thị giác.
+YOLOv9
+giới thiệu các phương pháp cải tiến như Thông tin Gradient có thể lập trình (PGI) và Mạng tổng hợp lớp hiệu quả tổng quát (GELAN).
+YOLOv10
+được tạo bởi các nhà nghiên cứu từ
+Đại học Thanh Hoa
+bằng cách sử dụng
+gói Python
+Ultralytics
+, cung cấp các tiến bộ
+phát hiện đối tượng
+theo thời gian thực bằng cách giới thiệu một End-to-End head giúp loại bỏ các yêu cầu về Non-Maximum Suppression (NMS).
+YOLO11
+🚀
+: Ultralytics ' mới nhất YOLO các mô hình, cung cấp hiệu suất tiên tiến (SOTA) trên nhiều tác vụ, bao gồm
+phát hiện đối tượng
+,
+phân đoạn
+,
+ước tính tư thế
+,
+theo dõi
+và
+phân loại
+, tận dụng các khả năng trên nhiều ứng dụng và miền AI khác nhau.
+YOLO26
+⚠️ Sắp ra mắt
+: Ultralytics ' thế hệ tiếp theo YOLO mô hình được tối ưu hóa cho việc triển khai biên với suy luận không cần NMS đầu cuối.
+Giấy phép YOLO: Ultralytics YOLO được cấp phép như thế nào?
+Ultralytics cung cấp hai tùy chọn cấp phép để phù hợp với các trường hợp sử dụng đa dạng:
+Giấy phép AGPL-3.0
+: Giấy phép mã nguồn mở
+được OSI phê duyệt
+này lý tưởng cho sinh viên và những người đam mê, thúc đẩy sự hợp tác mở và chia sẻ kiến thức. Xem tệp
+LICENSE
+để biết thêm chi tiết.
+Giấy phép doanh nghiệp
+: Được thiết kế để sử dụng cho mục đích thương mại, giấy phép này cho phép tích hợp liền mạch phần mềm và mô hình AI của Ultralytics vào hàng hóa và dịch vụ thương mại, bỏ qua các yêu cầu mã nguồn mở của AGPL-3.0. Nếu trường hợp của bạn liên quan đến việc nhúng các giải pháp của chúng tôi vào một sản phẩm thương mại, hãy liên hệ thông qua
+Cấp phép Ultralytics
+.
+Chiến lược cấp phép của chúng tôi được thiết kế để đảm bảo rằng mọi cải tiến đối với các dự án mã nguồn mở của chúng tôi đều được trả lại cho cộng đồng. Chúng tôi coi trọng các nguyên tắc của mã nguồn mở ❤️ và sứ mệnh của chúng tôi là đảm bảo rằng những đóng góp của chúng tôi có thể được sử dụng và mở rộng theo những cách có lợi cho tất cả mọi người.
+Sự phát triển của phát hiện đối tượng
+Phát hiện đối tượng đã phát triển đáng kể trong những năm qua, từ các kỹ thuật computer vision truyền thống đến các mô hình deep learning tiên tiến.
+Họ mô hình YOLO
+luôn đi đầu trong sự phát triển này, liên tục vượt qua các giới hạn về những gì có thể trong phát hiện đối tượng theo thời gian thực.
+Phương pháp tiếp cận độc đáo của YOLO coi việc phát hiện đối tượng như một bài toán hồi quy đơn lẻ, dự đoán
+các hộp giới hạn
+và xác suất lớp trực tiếp từ toàn bộ hình ảnh trong một lần đánh giá. Phương pháp mang tính cách mạng này đã làm cho các mô hình YOLO nhanh hơn đáng kể so với các trình dò tìm hai giai đoạn trước đó trong khi vẫn duy trì độ chính xác cao.
+Với mỗi phiên bản mới, YOLO đã giới thiệu những cải tiến về kiến trúc và các kỹ thuật tiên tiến giúp nâng cao hiệu suất trên nhiều chỉ số khác nhau. YOLO11 tiếp tục truyền thống này bằng cách kết hợp những tiến bộ mới nhất trong nghiên cứu về thị giác máy tính, mang lại sự cân bằng giữa tốc độ và độ chính xác tốt hơn nữa cho các ứng dụng thực tế.
+Câu hỏi thường gặp
+Ultralytics YOLO là gì và nó cải thiện khả năng phát hiện đối tượng như thế nào?
+Ultralytics YOLO là một bước tiến mới nhất trong series YOLO (You Only Look Once) nổi tiếng để phát hiện đối tượng và phân đoạn ảnh theo thời gian thực. Nó được xây dựng dựa trên các phiên bản trước bằng cách giới thiệu các tính năng và cải tiến mới để nâng cao hiệu suất, tính linh hoạt và hiệu quả. YOLO hỗ trợ nhiều
+tác vụ AI thị giác
+khác nhau như phát hiện, phân đoạn, ước tính tư thế, theo dõi và phân loại. Kiến trúc hiện đại của nó đảm bảo tốc độ và độ chính xác vượt trội, làm cho nó phù hợp với nhiều ứng dụng khác nhau, bao gồm các thiết bị biên và API đám mây.
+Làm cách nào để bắt đầu cài đặt và thiết lập YOLO?
+Bắt đầu với YOLO rất nhanh chóng và đơn giản. Bạn có thể cài đặt gói Ultralytics bằng
+pip
+và thiết lập, chạy trong vài phút. Dưới đây là lệnh cài đặt cơ bản:
+Cài đặt bằng pip
+CLI
+pip
+install
+ultralytics
+Để có hướng dẫn từng bước toàn diện, hãy truy cập trang
+Bắt đầu nhanh
+của chúng tôi. Tài nguyên này sẽ giúp bạn với hướng dẫn cài đặt, thiết lập ban đầu và chạy mô hình đầu tiên của bạn.
+Làm cách nào để huấn luyện một mô hình YOLO tùy chỉnh trên bộ dữ liệu của tôi?
+Huấn luyện một mô hình YOLO tùy chỉnh trên bộ dữ liệu của bạn bao gồm một vài bước chi tiết:
+Chuẩn bị bộ dữ liệu đã được gán nhãn của bạn.
+Định cấu hình các tham số huấn luyện trong tệp YAML.
+Sử dụng
+yolo TASK train
+lệnh để bắt đầu huấn luyện. (Mỗi
+TASK
+có đối số riêng)
+Dưới đây là mã ví dụ cho Nhiệm vụ Phát hiện Đối tượng:
+Ví dụ Huấn luyện cho Nhiệm vụ Phát hiện Đối tượng
+Python
+CLI
+from
+ultralytics
+import
+YOLO
+# Load a pre-trained YOLO model (you can choose n, s, m, l, or x versions)
+model
+=
+YOLO
+(
+"yolo11n.pt"
+)
+# Start training on your custom dataset
+model
+.
+train
+(
+data
+=
+"path/to/dataset.yaml"
+,
+epochs
+=
+100
+,
+imgsz
+=
+640
+)
+# Train a YOLO model from the command line
+yolo
+detect
+train
+data
+=
+path/to/dataset.yaml
+epochs
+=
+100
+imgsz
+=
+640
+Để có hướng dẫn chi tiết, hãy xem hướng dẫn
+Huấn luyện Mô hình
+của chúng tôi, bao gồm các ví dụ và mẹo để tối ưu hóa quy trình huấn luyện của bạn.
+Các tùy chọn cấp phép nào khả dụng cho Ultralytics YOLO?
+Ultralytics cung cấp hai tùy chọn cấp phép cho YOLO:
+Giấy phép AGPL-3.0
+: Giấy phép mã nguồn mở này lý tưởng cho mục đích sử dụng giáo dục và phi thương mại, thúc đẩy sự hợp tác mở.
+Giấy phép Doanh nghiệp
+: Được thiết kế cho các ứng dụng thương mại, cho phép tích hợp liền mạch phần mềm Ultralytics vào các sản phẩm thương mại mà không bị giới hạn bởi giấy phép AGPL-3.0.
+Để biết thêm chi tiết, hãy truy cập trang
+Cấp phép
+của chúng tôi.
+Ultralytics YOLO có thể được sử dụng để theo dõi đối tượng theo thời gian thực như thế nào?
+Ultralytics YOLO hỗ trợ theo dõi đa đối tượng hiệu quả và có thể tùy chỉnh. Để sử dụng các khả năng theo dõi, bạn có thể sử dụng
+yolo track
+lệnh, như được hiển thị bên dưới:
+Ví dụ về Theo dõi Đối tượng trên Video
+Python
+CLI
+from
+ultralytics
+import
+YOLO
+# Load a pre-trained YOLO model
+model
+=
+YOLO
+(
+"yolo11n.pt"
+)
+# Start tracking objects in a video
+# You can also use live video streams or webcam input
+model
+.
+track
+(
+source
+=
+"path/to/video.mp4"
+)
+# Perform object tracking on a video from the command line
+# You can specify different sources like webcam (0) or RTSP streams
+yolo
+track
+source
+=
+path/to/video.mp4
+Để có hướng dẫn chi tiết về thiết lập và chạy theo dõi đối tượng, hãy xem tài liệu
+Chế độ theo dõi (Track Mode)
+của chúng tôi, tài liệu này giải thích cấu hình và các ứng dụng thực tế trong các tình huống thời gian thực.
+📅
+Đã tạo 1 năm trước
+✏️
+Cập nhật 1 ngày trước
+Tweet
+Chia sẻ
+Bình luận
+Trở lại đầu trang

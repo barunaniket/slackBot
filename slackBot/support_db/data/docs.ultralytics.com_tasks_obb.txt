@@ -1,0 +1,876 @@
+https://docs.ultralytics.com/tasks/obb
+Oriented Bounding Boxes
+Object Detection
+Oriented object detection goes a step further than standard object detection by introducing an extra angle to locate objects more accurately in an image.
+The output of an oriented object detector is a set of rotated bounding boxes that precisely enclose the objects in the image, along with class labels and confidence scores for each box. Oriented bounding boxes are particularly useful when objects appear at various angles, such as in aerial imagery, where traditional axis-aligned bounding boxes may include unnecessary background.
+Tip
+YOLO11 OBB models use the
+-obb
+suffix, i.e.
+yolo11n-obb.pt
+and are pretrained on
+DOTAv1
+.
+Watch:
+Object Detection using Ultralytics YOLO Oriented Bounding Boxes (YOLO-OBB)
+Visual Samples
+Ships Detection using OBB
+Vehicle Detection using OBB
+Models
+YOLO11 pretrained OBB models are shown here, which are pretrained on the
+DOTAv1
+dataset.
+Models
+download automatically from the latest Ultralytics
+release
+on first use.
+Model
+size
+(pixels)
+mAP
+test
+50
+Speed
+CPU ONNX
+(ms)
+Speed
+T4 TensorRT10
+(ms)
+params
+(M)
+FLOPs
+(B)
+YOLO11n-obb
+1024
+78.4
+117.6 ± 0.8
+4.4 ± 0.0
+2.7
+16.8
+YOLO11s-obb
+1024
+79.5
+219.4 ± 4.0
+5.1 ± 0.0
+9.7
+57.1
+YOLO11m-obb
+1024
+80.9
+562.8 ± 2.9
+10.1 ± 0.4
+20.9
+182.8
+YOLO11l-obb
+1024
+81.0
+712.5 ± 5.0
+13.5 ± 0.6
+26.1
+231.2
+YOLO11x-obb
+1024
+81.3
+1408.6 ± 7.7
+28.6 ± 1.0
+58.8
+519.1
+mAP
+test
+values are for single-model multiscale on
+DOTAv1
+dataset.
+Reproduce by
+yolo val obb data=DOTAv1.yaml device=0 split=test
+and submit merged results to
+DOTA evaluation
+.
+Speed
+averaged over DOTAv1 val images using an
+Amazon EC2 P4d
+instance.
+Reproduce by
+yolo val obb data=DOTAv1.yaml batch=1 device=0|cpu
+Train
+Train YOLO11n-obb on the DOTA8 dataset for 100
+epochs
+at image size 640. For a full list of available arguments see the
+Configuration
+page.
+Note
+OBB angles are constrained to the range
+0–90 degrees
+(exclusive of 90). Angles of 90 degrees or greater are not supported.
+Example
+Python
+CLI
+from
+ultralytics
+import
+YOLO
+# Load a model
+model
+=
+YOLO
+(
+"yolo11n-obb.yaml"
+)
+# build a new model from YAML
+model
+=
+YOLO
+(
+"yolo11n-obb.pt"
+)
+# load a pretrained model (recommended for training)
+model
+=
+YOLO
+(
+"yolo11n-obb.yaml"
+)
+.
+load
+(
+"yolo11n.pt"
+)
+# build from YAML and transfer weights
+# Train the model
+results
+=
+model
+.
+train
+(
+data
+=
+"dota8.yaml"
+,
+epochs
+=
+100
+,
+imgsz
+=
+640
+)
+# Build a new model from YAML and start training from scratch
+yolo
+obb
+train
+data
+=
+dota8.yaml
+model
+=
+yolo11n-obb.yaml
+epochs
+=
+100
+imgsz
+=
+640
+# Start training from a pretrained *.pt model
+yolo
+obb
+train
+data
+=
+dota8.yaml
+model
+=
+yolo11n-obb.pt
+epochs
+=
+100
+imgsz
+=
+640
+# Build a new model from YAML, transfer pretrained weights to it and start training
+yolo
+obb
+train
+data
+=
+dota8.yaml
+model
+=
+yolo11n-obb.yaml
+pretrained
+=
+yolo11n-obb.pt
+epochs
+=
+100
+imgsz
+=
+640
+Watch:
+How to Train Ultralytics YOLO-OBB (Oriented Bounding Boxes) Models on DOTA Dataset using Ultralytics HUB
+Dataset format
+OBB dataset format can be found in detail in the
+Dataset Guide
+. The YOLO OBB format designates bounding boxes by their four corner points with coordinates normalized between 0 and 1, following this structure:
+class_index x1 y1 x2 y2 x3 y3 x4 y4
+Internally, YOLO processes losses and outputs in the
+xywhr
+format, which represents the
+bounding box
+'s center point (xy), width, height, and rotation.
+Val
+Validate trained YOLO11n-obb model
+accuracy
+on the DOTA8 dataset. No arguments are needed as the
+model
+retains its training
+data
+and arguments as model attributes.
+Example
+Python
+CLI
+from
+ultralytics
+import
+YOLO
+# Load a model
+model
+=
+YOLO
+(
+"yolo11n-obb.pt"
+)
+# load an official model
+model
+=
+YOLO
+(
+"path/to/best.pt"
+)
+# load a custom model
+# Validate the model
+metrics
+=
+model
+.
+val
+(
+data
+=
+"dota8.yaml"
+)
+# no arguments needed, dataset and settings remembered
+metrics
+.
+box
+.
+map
+# map50-95(B)
+metrics
+.
+box
+.
+map50
+# map50(B)
+metrics
+.
+box
+.
+map75
+# map75(B)
+metrics
+.
+box
+.
+maps
+# a list contains map50-95(B) of each category
+yolo
+obb
+val
+model
+=
+yolo11n-obb.pt
+data
+=
+dota8.yaml
+# val official model
+yolo
+obb
+val
+model
+=
+path/to/best.pt
+data
+=
+path/to/data.yaml
+# val custom model
+Predict
+Use a trained YOLO11n-obb model to run predictions on images.
+Example
+Python
+CLI
+from
+ultralytics
+import
+YOLO
+# Load a model
+model
+=
+YOLO
+(
+"yolo11n-obb.pt"
+)
+# load an official model
+model
+=
+YOLO
+(
+"path/to/best.pt"
+)
+# load a custom model
+# Predict with the model
+results
+=
+model
+(
+"https://ultralytics.com/images/boats.jpg"
+)
+# predict on an image
+# Access the results
+for
+result
+in
+results
+:
+xywhr
+=
+result
+.
+obb
+.
+xywhr
+# center-x, center-y, width, height, angle (radians)
+xyxyxyxy
+=
+result
+.
+obb
+.
+xyxyxyxy
+# polygon format with 4-points
+names
+=
+[
+result
+.
+names
+[
+cls
+.
+item
+()]
+for
+cls
+in
+result
+.
+obb
+.
+cls
+.
+int
+()]
+# class name of each box
+confs
+=
+result
+.
+obb
+.
+conf
+# confidence score of each box
+yolo
+obb
+predict
+model
+=
+yolo11n-obb.pt
+source
+=
+'https://ultralytics.com/images/boats.jpg'
+# predict with official model
+yolo
+obb
+predict
+model
+=
+path/to/best.pt
+source
+=
+'https://ultralytics.com/images/boats.jpg'
+# predict with custom model
+Watch:
+How to Detect and Track Storage Tanks using Ultralytics YOLO-OBB | Oriented Bounding Boxes | DOTA
+See full
+predict
+mode details in the
+Predict
+page.
+Export
+Export a YOLO11n-obb model to a different format like ONNX, CoreML, etc.
+Example
+Python
+CLI
+from
+ultralytics
+import
+YOLO
+# Load a model
+model
+=
+YOLO
+(
+"yolo11n-obb.pt"
+)
+# load an official model
+model
+=
+YOLO
+(
+"path/to/best.pt"
+)
+# load a custom trained model
+# Export the model
+model
+.
+export
+(
+format
+=
+"onnx"
+)
+yolo
+export
+model
+=
+yolo11n-obb.pt
+format
+=
+onnx
+# export official model
+yolo
+export
+model
+=
+path/to/best.pt
+format
+=
+onnx
+# export custom trained model
+Available YOLO11-obb export formats are in the table below. You can export to any format using the
+format
+argument, i.e.
+format='onnx'
+or
+format='engine'
+. You can predict or validate directly on exported models, i.e.
+yolo predict model=yolo11n-obb.onnx
+. Usage examples are shown for your model after export completes.
+Format
+format
+Argument
+Model
+Metadata
+Arguments
+PyTorch
+-
+yolo11n-obb.pt
+✅
+-
+TorchScript
+torchscript
+yolo11n-obb.torchscript
+✅
+imgsz
+,
+half
+,
+dynamic
+,
+optimize
+,
+nms
+,
+batch
+,
+device
+ONNX
+onnx
+yolo11n-obb.onnx
+✅
+imgsz
+,
+half
+,
+dynamic
+,
+simplify
+,
+opset
+,
+nms
+,
+batch
+,
+device
+OpenVINO
+openvino
+yolo11n-obb_openvino_model/
+✅
+imgsz
+,
+half
+,
+dynamic
+,
+int8
+,
+nms
+,
+batch
+,
+data
+,
+fraction
+,
+device
+TensorRT
+engine
+yolo11n-obb.engine
+✅
+imgsz
+,
+half
+,
+dynamic
+,
+simplify
+,
+workspace
+,
+int8
+,
+nms
+,
+batch
+,
+data
+,
+fraction
+,
+device
+CoreML
+coreml
+yolo11n-obb.mlpackage
+✅
+imgsz
+,
+dynamic
+,
+half
+,
+int8
+,
+nms
+,
+batch
+,
+device
+TF SavedModel
+saved_model
+yolo11n-obb_saved_model/
+✅
+imgsz
+,
+keras
+,
+int8
+,
+nms
+,
+batch
+,
+device
+TF GraphDef
+pb
+yolo11n-obb.pb
+❌
+imgsz
+,
+batch
+,
+device
+TF Lite
+tflite
+yolo11n-obb.tflite
+✅
+imgsz
+,
+half
+,
+int8
+,
+nms
+,
+batch
+,
+data
+,
+fraction
+,
+device
+TF Edge TPU
+edgetpu
+yolo11n-obb_edgetpu.tflite
+✅
+imgsz
+,
+device
+TF.js
+tfjs
+yolo11n-obb_web_model/
+✅
+imgsz
+,
+half
+,
+int8
+,
+nms
+,
+batch
+,
+device
+PaddlePaddle
+paddle
+yolo11n-obb_paddle_model/
+✅
+imgsz
+,
+batch
+,
+device
+MNN
+mnn
+yolo11n-obb.mnn
+✅
+imgsz
+,
+batch
+,
+int8
+,
+half
+,
+device
+NCNN
+ncnn
+yolo11n-obb_ncnn_model/
+✅
+imgsz
+,
+half
+,
+batch
+,
+device
+IMX500
+imx
+yolo11n-obb_imx_model/
+✅
+imgsz
+,
+int8
+,
+data
+,
+fraction
+,
+device
+RKNN
+rknn
+yolo11n-obb_rknn_model/
+✅
+imgsz
+,
+batch
+,
+name
+,
+device
+See full
+export
+details in the
+Export
+page.
+Real-World Applications
+OBB detection with YOLO11 has numerous practical applications across various industries:
+Maritime and Port Management
+: Detecting ships and vessels at various angles for
+fleet management
+and monitoring.
+Urban Planning
+: Analyzing buildings and infrastructure from aerial imagery.
+Agriculture
+: Monitoring crops and agricultural equipment from drone footage.
+Energy Sector
+: Inspecting solar panels and wind turbines at different orientations.
+Transportation
+: Tracking vehicles on roads and in parking lots from various perspectives.
+These applications benefit from OBB's ability to precisely fit objects at any angle, providing more accurate detection than traditional bounding boxes.
+FAQ
+What are Oriented Bounding Boxes (OBB) and how do they differ from regular bounding boxes?
+Oriented Bounding Boxes (OBB) include an additional angle to enhance object localization accuracy in images. Unlike regular bounding boxes, which are axis-aligned rectangles, OBBs can rotate to fit the orientation of the object better. This is particularly useful for applications requiring precise object placement, such as aerial or satellite imagery (
+Dataset Guide
+).
+How do I train a YOLO11n-obb model using a custom dataset?
+To train a YOLO11n-obb model with a custom dataset, follow the example below using Python or CLI:
+Example
+Python
+CLI
+from
+ultralytics
+import
+YOLO
+# Load a pretrained model
+model
+=
+YOLO
+(
+"yolo11n-obb.pt"
+)
+# Train the model
+results
+=
+model
+.
+train
+(
+data
+=
+"path/to/custom_dataset.yaml"
+,
+epochs
+=
+100
+,
+imgsz
+=
+640
+)
+yolo
+obb
+train
+data
+=
+path/to/custom_dataset.yaml
+model
+=
+yolo11n-obb.pt
+epochs
+=
+100
+imgsz
+=
+640
+For more training arguments, check the
+Configuration
+section.
+What datasets can I use for training YOLO11-OBB models?
+YOLO11-OBB models are pretrained on datasets like
+DOTAv1
+but you can use any dataset formatted for OBB. Detailed information on OBB dataset formats can be found in the
+Dataset Guide
+.
+How can I export a YOLO11-OBB model to ONNX format?
+Exporting a YOLO11-OBB model to ONNX format is straightforward using either Python or CLI:
+Example
+Python
+CLI
+from
+ultralytics
+import
+YOLO
+# Load a model
+model
+=
+YOLO
+(
+"yolo11n-obb.pt"
+)
+# Export the model
+model
+.
+export
+(
+format
+=
+"onnx"
+)
+yolo
+export
+model
+=
+yolo11n-obb.pt
+format
+=
+onnx
+For more export formats and details, refer to the
+Export
+page.
+How do I validate the accuracy of a YOLO11n-obb model?
+To validate a YOLO11n-obb model, you can use Python or CLI commands as shown below:
+Example
+Python
+CLI
+from
+ultralytics
+import
+YOLO
+# Load a model
+model
+=
+YOLO
+(
+"yolo11n-obb.pt"
+)
+# Validate the model
+metrics
+=
+model
+.
+val
+(
+data
+=
+"dota8.yaml"
+)
+yolo
+obb
+val
+model
+=
+yolo11n-obb.pt
+data
+=
+dota8.yaml
+See full validation details in the
+Val
+section.
+📅
+Created 1 year ago
+✏️
+Updated 1 month ago
+Tweet
+Share
+Comments
+Back to top

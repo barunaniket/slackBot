@@ -1,37 +1,11 @@
-import asyncio
 import os
 import re
-import lancedb
-import openai
-import json
 import time
+import requests
+import json
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse, urlunparse
-from dotenv import load_dotenv
 from typing import Set, List, Dict
-from collections import defaultdict
-
-# Check if playwright is available
-try:
-    from playwright.async_api import async_playwright, TimeoutError as PlaywrightTimeout
-    PLAYWRIGHT_AVAILABLE = True
-except ImportError:
-    PLAYWRIGHT_AVAILABLE = False
-    print("⚠️  Playwright not installed. Install with: pip install playwright && playwright install chromium")
-
-# --- CONFIGURATION & INITIALIZATION ---
-print("Loading configuration...")
-load_dotenv()
-openai.api_key = os.environ.get("OPENAI_API_KEY")
-db = lancedb.connect("./support_db")
-
-class SupportDoc(lancedb.pydantic.LanceModel):
-    text: str
-    vector: lancedb.pydantic.Vector(1536)
-    source_url: str
-    chunk_ref: str = ""  # Reference to specific chunk
-    page_title: str = ""
-    crawled_at: str = ""
 
 # --- URL NORMALIZATION ---
 def normalize_url(url: str) -> str:
@@ -196,308 +170,124 @@ def load_crawl_state(state_file: str) -> Dict:
             "processed_urls": set()
         }
 
-# --- PLAYWRIGHT CRAWLER (for JS-heavy sites) ---
-async def crawl_with_playwright(start_url: str, max_pages: int = None, table=None, 
-                               state_file: str = None, additional_paths: List[str] = None):
-    """Enhanced crawler with support for multiple documentation paths."""
-    if not PLAYWRIGHT_AVAILABLE:
-        print("❌ Playwright is not installed. Please run:")
-        print("   pip install playwright")
-        print("   playwright install chromium")
-        return []
-    
+# --- HTML-BASED CRAWLER FOR ULTRALYTICS DOCS ---
+def crawl_ultralytics_docs(
+    start_url: str,
+    max_pages: int = None,
+    output_dir: str = "slackBot/support_db/data/"
+):
+    """Fast HTML-based crawler for Ultralytics documentation."""
     parsed_start = urlparse(start_url)
     base_domain = parsed_start.netloc
-    
-    # Extract the initial path and add any additional paths
-    path_parts = [p for p in parsed_start.path.split('/') if p]
-    start_path = '/' + path_parts[0] if path_parts else '/'
-    
-    # For Zscaler and similar sites, add common documentation paths
-    default_paths = [start_path]
-    if additional_paths:
-        default_paths.extend(additional_paths)
-    
-    # For Zscaler specifically, add these paths
-    if "zscaler.com" in base_domain:
-        default_paths.extend(["/zia", "/zpa", "/zdx", "/zda", "/zcc", "/ztna"])
-    
-    # Load previous state if available
-    state = load_crawl_state(state_file) if state_file else {
-        "visited_urls": set(),
-        "to_visit": [],
-        "stats": defaultdict(int),
-        "processed_urls": set()
-    }
-    
-    visited_urls = state["visited_urls"]
-    to_visit = state["to_visit"] if state["to_visit"] else [start_url]
-    stats = state["stats"]
-    processed_urls = state["processed_urls"]
-    
-    print(f"\n🌐 Using Playwright (JavaScript-enabled browser)")
-    print(f"   Base domain: {base_domain}")
-    print(f"   Start paths: {', '.join(default_paths)}")
+    start_path = parsed_start.path if parsed_start.path else "/"
+    allowed_paths = ["/"]  # crawl all internal docs and subpaths
+
+    # State
+    visited_urls: Set[str] = set()
+    to_visit: List[str] = [start_url]
+    stats = {"scraped": 0, "skipped": 0, "errors": 0, "links_found": 0}
+
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    print(f"\n🌐 Starting Ultralytics docs crawl: {start_url}")
+    print(f"   Output directory: {output_dir}")
     print(f"   Max pages: {max_pages or 'unlimited'}")
-    print(f"   Resuming from previous crawl: {len(visited_urls)} URLs already visited")
-    print(f"   URLs in queue: {len(to_visit)}")
-    print(f"   URLs already processed: {len(processed_urls)}\n")
-    
-    async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=True)
-        context = await browser.new_context(
-            user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-        )
-        page = await context.new_page()
-        
-        # Counter for batch processing
-        batch_counter = 0
-        save_interval = 5  # Save state every 5 pages
-        
-        while to_visit and (max_pages is None or len(processed_urls) < max_pages):
-            url = to_visit.pop(0)
-            normalized_url = normalize_url(url)
-            
-            if normalized_url in visited_urls:
+
+    binary_exts = (".pdf", ".zip", ".exe", ".dmg", ".jpg", ".jpeg", ".png", ".gif", ".svg", ".webp", ".ico", ".mp4", ".mp3", ".mov")
+
+    while to_visit and (max_pages is None or stats["scraped"] < max_pages):
+        url = to_visit.pop(0)
+        normalized_url = normalize_url(url)
+        if normalized_url in visited_urls:
+            continue
+        visited_urls.add(normalized_url)
+
+        # Skip binary/irrelevant links
+        if any(normalized_url.lower().endswith(ext) for ext in binary_exts):
+            stats["skipped"] += 1
+            print(f"⊘ Skipped (binary): {normalized_url}")
+            continue
+        if "#" in normalized_url:
+            stats["skipped"] += 1
+            print(f"⊘ Skipped (fragment): {normalized_url}")
+            continue
+
+        # Only crawl internal docs pages
+        if not should_crawl_url(normalized_url, base_domain, allowed_paths):
+            stats["skipped"] += 1
+            print(f"⊘ Skipped (external or disallowed): {normalized_url}")
+            continue
+
+        print(f"[{stats['scraped']+1}] Crawling: {normalized_url}")
+        try:
+            resp = requests.get(normalized_url, timeout=15, headers={"User-Agent": "Mozilla/5.0"}, allow_redirects=True)
+            final_url = resp.url
+            if final_url != normalized_url:
+                normalized_url = normalize_url(final_url)
+            if not resp.ok or "text/html" not in resp.headers.get("Content-Type", ""):
+                stats["skipped"] += 1
+                print(f"   ⊘ Skipped (not HTML or bad response): {normalized_url} (Status: {resp.status_code})")
                 continue
-            
-            visited_urls.add(normalized_url)
-            print(f"[{len(processed_urls)+1}] Scraping: {normalized_url}")
-            
-            try:
-                # Navigate and wait for content
-                await page.goto(normalized_url, wait_until='networkidle', timeout=30000)
-                await asyncio.sleep(1)  # Extra wait for JS to render
-                
-                # Get rendered HTML
-                html = await page.content()
-                soup = BeautifulSoup(html, 'html.parser')
-                
-                # Extract content
-                extracted = extract_main_content(soup, normalized_url)
-                
-                if extracted['content'] and len(extracted['content']) > 100:
-                    # Process and ingest this page immediately
-                    await process_and_ingest_page({
-                        "url": normalized_url,
-                        "content": extracted['content'],
-                        "title": extracted['title']
-                    }, table)
-                    
-                    processed_urls.add(normalized_url)
-                    stats['scraped'] += 1
-                    print(f"   ✓ Scraped and saved: {extracted['title'][:60]}...")
-                else:
-                    print(f"   ⊘ Skipped: No substantial content")
-                
-                # Find links
-                links_found = 0
-                for link in soup.find_all('a', href=True):
-                    href = link['href']
-                    absolute_url = urljoin(normalized_url, href)
-                    absolute_url = normalize_url(absolute_url)
-                    
-                    if (should_crawl_url(absolute_url, base_domain, default_paths) 
-                        and absolute_url not in visited_urls
-                        and absolute_url not in to_visit):
-                        to_visit.append(absolute_url)
-                        links_found += 1
-                
-                stats['links_found'] += links_found
-                
-                if links_found > 0:
-                    print(f"   → Found {links_found} new links (Queue: {len(to_visit)})")
-                
-                # Save state periodically
-                batch_counter += 1
-                if batch_counter % save_interval == 0:
-                    save_crawl_state(state_file, visited_urls, to_visit, stats, processed_urls)
-                    print(f"   💾 Saved crawl state (visited {len(visited_urls)} URLs, processed {len(processed_urls)})")
-                
-                # Progress update every 10 pages
-                if len(processed_urls) % 10 == 0:
-                    print(f"\n📊 Progress: {stats['scraped']} pages scraped, "
-                          f"{len(visited_urls)} visited, {len(to_visit)} queued\n")
-                
-            except PlaywrightTimeout:
-                stats['errors'] += 1
-                print(f"   ✗ Timeout on {normalized_url}")
-            except Exception as e:
-                stats['errors'] += 1
-                print(f"   ✗ Error: {e}")
-            
-            await asyncio.sleep(0.5)  # Be polite
-        
-        # Final state save
-        save_crawl_state(state_file, visited_urls, to_visit, stats, processed_urls)
-        await browser.close()
-    
+            soup = BeautifulSoup(resp.text, "html.parser")
+            extracted = extract_main_content(soup, normalized_url)
+            if extracted["content"] and len(extracted["content"]) > 100:
+                # Save as .txt file
+                safe_path = (
+                    normalized_url.replace("https://", "")
+                    .replace("http://", "")
+                    .replace("/", "_")
+                    .replace("?", "_")
+                    .replace("#", "_")
+                )
+                out_path = os.path.join(output_dir, safe_path + ".txt")
+                with open(out_path, "w", encoding="utf-8") as f:
+                    f.write(normalized_url + "\n")
+                    f.write(extracted["content"])
+                stats["scraped"] += 1
+                print(f"   ✓ Saved: {out_path}")
+            else:
+                stats["skipped"] += 1
+                print(f"   ⊘ Skipped (no substantial content): {normalized_url}")
+
+            # Find and queue new links
+            links_found = 0
+            for link in soup.find_all("a", href=True):
+                href = link["href"]
+                if href.startswith("mailto:") or href.startswith("tel:"):
+                    continue
+                absolute_url = urljoin(normalized_url, href)
+                absolute_url = normalize_url(absolute_url)
+                if (
+                    should_crawl_url(absolute_url, base_domain, allowed_paths)
+                    and absolute_url not in visited_urls
+                    and absolute_url not in to_visit
+                    and not any(absolute_url.lower().endswith(ext) for ext in binary_exts)
+                    and "#" not in absolute_url
+                ):
+                    to_visit.append(absolute_url)
+                    links_found += 1
+            stats["links_found"] += links_found
+            if links_found > 0:
+                print(f"   → Found {links_found} new links (Queue: {len(to_visit)})")
+            if stats["scraped"] % 10 == 0 and stats["scraped"] > 0:
+                print(f"📊 Progress: {stats['scraped']} pages saved, {len(visited_urls)} visited, {len(to_visit)} queued")
+        except Exception as e:
+            stats["errors"] += 1
+            print(f"   ✗ Error: {e}")
+
     print(f"\n✅ Crawling complete!")
     print(f"   Pages visited: {len(visited_urls)}")
-    print(f"   Pages scraped: {stats['scraped']}")
+    print(f"   Pages saved: {stats['scraped']}")
     print(f"   Links found: {stats['links_found']}")
     print(f"   Errors: {stats['errors']}")
-    
-    return stats['scraped']
+    print(f"   Skipped: {stats['skipped']}")
 
-# --- PAGE PROCESSING AND INGESTION ---
-async def process_and_ingest_page(page: Dict, table):
-    """Process a single page and ingest it into the database with URL tracking."""
-    chunks = chunk_text(page['content'], max_chars=1000)
-    
-    if not chunks:
-        return
-    
-    # Create documents for this page
-    docs = []
-    for i, text_chunk in enumerate(chunks):
-        if text_chunk.strip():
-            # Add chunk number for reference
-            chunk_ref = f"{page['url']}#chunk-{i+1}"
-            docs.append({
-                "text": text_chunk,
-                "source_url": page['url'],
-                "chunk_ref": chunk_ref,
-                "page_title": page.get('title', ''),
-                "crawled_at": time.strftime("%Y-%m-%d %H:%M:%S")
-            })
-    
-    if not docs:
-        return
-    
-    # Create embeddings
-    texts = [doc["text"] for doc in docs]
-    try:
-        response = await asyncio.to_thread(
-            openai.embeddings.create, 
-            input=texts, 
-            model="text-embedding-ada-002"
-        )
-        embeddings = [item.embedding for item in response.data]
-        
-        # Prepare data for insertion
-        data_to_add = [
-            {
-                "text": doc["text"], 
-                "vector": emb, 
-                "source_url": doc["source_url"],
-                "chunk_ref": doc["chunk_ref"],
-                "page_title": doc["page_title"],
-                "crawled_at": doc["crawled_at"]
-            } 
-            for doc, emb in zip(docs, embeddings)
-        ]
-        
-        # Add to database
-        await asyncio.to_thread(table.add, data_to_add)
-        
-    except Exception as e:
-        print(f"  ✗ Failed to process page {page['url']}: {e}")
-
-# --- MAIN EXECUTION ---
 if __name__ == "__main__":
     print("=" * 60)
-    print("Documentation Crawler & Ingestion Tool")
+    print("Ultralytics Documentation HTML Crawler")
     print("=" * 60)
-    
-    # Show example URLs
-    print("\n💡 Example URLs for Zscaler documentation:")
-    print("   https://help.zscaler.com/zia")
-    print("   https://help.zscaler.com/zpa")
-    print("   https://help.zscaler.com/zdx")
-    print("   https://help.zscaler.com/ (main documentation site)")
-    
-    start_url = ""
-    while True:
-        start_url_input = input("\n🔗 Enter the starting URL (or 'exit'): ").strip()
-        
-        if start_url_input.lower() == 'exit':
-            print("Exiting...")
-            break
-        
-        parsed = urlparse(start_url_input)
-        if parsed.scheme and parsed.netloc:
-            start_url = start_url_input
-            break
-        
-        print("❌ Invalid URL. Include 'https://' or 'http://'.")
-    
-    if start_url:
-        # Ask about max pages
-        max_pages_input = input("\n📄 Maximum pages to crawl (Enter for unlimited): ").strip()
-        max_pages = int(max_pages_input) if max_pages_input.isdigit() else None
-        
-        # For Zscaler, ask if user wants to crawl all product documentation
-        additional_paths = []
-        if "zscaler.com" in start_url:
-            crawl_all = input("\n🔍 Crawl all Zscaler product documentation? (yes/no, default=yes): ").strip().lower()
-            if crawl_all != 'no':
-                additional_paths = ["/zia", "/zpa", "/zdx", "/zda", "/zcc", "/ztna"]
-        
-        # Choose crawler mode
-        use_playwright = False
-        if PLAYWRIGHT_AVAILABLE:
-            mode = input("\n🚀 Use JavaScript-enabled browser? (yes/no, default=yes): ").strip().lower()
-            use_playwright = mode != 'no'
-        else:
-            print("\n⚠️  Playwright not available. Using basic crawler.")
-            print("   For JavaScript sites, install: pip install playwright && playwright install chromium")
-        
-        # Database setup
-        table = None
-        try:
-            user_input = input(f"\n⚠️  Clear existing data? (yes/no): ").lower()
-            
-            if user_input == 'yes':
-                print("🗑️  Clearing 'support_docs' table...")
-                db.drop_table("support_docs", ignore_missing=True)
-                table = db.create_table("support_docs", schema=SupportDoc, mode="overwrite")
-                print("✅ Created new table")
-            else:
-                print("📂 Opening existing table...")
-                try:
-                    table = db.open_table("support_docs")
-                    print("✅ Opened existing table")
-                except Exception:
-                    print("⚠️  Table not found. Creating new one...")
-                    table = db.create_table("support_docs", schema=SupportDoc, mode="overwrite")
-        
-        except Exception as e:
-            print(f"❌ Database error: {e}")
-            table = db.create_table("support_docs", schema=SupportDoc, mode="overwrite")
-        
-        if table is not None:
-            # Create state file based on domain
-            parsed_url = urlparse(start_url)
-            state_file = f"crawl_state_{parsed_url.netloc.replace('.', '_')}.json"
-            
-            print(f"\n{'=' * 60}")
-            print(f"🚀 Starting crawler: {start_url}")
-            print(f"📁 State file: {state_file}")
-            if additional_paths:
-                print(f"📂 Additional paths: {', '.join(additional_paths)}")
-            print(f"{'=' * 60}")
-            
-            async def main():
-                if use_playwright:
-                    pages_scraped = await crawl_with_playwright(
-                        start_url, 
-                        max_pages=max_pages, 
-                        table=table,
-                        state_file=state_file,
-                        additional_paths=additional_paths
-                    )
-                else:
-                    print("❌ Basic crawler doesn't support JS sites.")
-                    print("   Please install Playwright or use a direct documentation URL.")
-                    return
-                
-                if pages_scraped > 0:
-                    print(f"\n{'=' * 60}")
-                    print(f"🎉 Done! {pages_scraped} pages have been crawled and saved to the database.")
-                    print(f"{'=' * 60}")
-                    print(f"\nYour documentation is now searchable.")
-                else:
-                    print("\n⚠️  No new pages scraped. Check the URL or try increasing the max pages limit.")
-            
-            asyncio.run(main())
+    start_url = "https://docs.ultralytics.com/"
+    max_pages = None  # Set to None for unlimited
+    output_dir = "slackBot/support_db/data/"
+    crawl_ultralytics_docs(start_url, max_pages=max_pages, output_dir=output_dir)

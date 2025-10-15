@@ -1,0 +1,170 @@
+https://docs.ultralytics.com/hub
+Ultralytics HUB
+中文
+|
+한국어
+|
+日本語
+|
+Русский
+|
+Deutsch
+|
+Français
+|
+Español
+|
+Português
+|
+Türkçe
+|
+Tiếng Việt
+|
+العربية
+👋 Hello from the
+Ultralytics
+Team! We've been working hard these last few months to launch
+Ultralytics HUB
+, a new web tool for training and deploying all your YOLOv5, YOLOv8, and YOLO11 🚀 models from one spot!
+We hope that the resources here will help you get the most out of HUB. Please browse the HUB
+Docs
+for details, raise an issue on
+GitHub
+for support, and join our
+Discord
+community for questions and discussions!
+Introduction
+Ultralytics HUB
+is designed to be user-friendly and intuitive, allowing users to quickly upload their datasets and train new YOLO models. It also offers a range of pre-trained models to choose from, making it extremely easy for users to get started. Once a model is trained, it can be effortlessly previewed in the
+Ultralytics HUB App
+before being deployed for real-time classification,
+object detection
+, and
+instance segmentation
+tasks.
+Watch:
+How to train Ultralytics YOLO11 on Custom Dataset using Ultralytics HUB | HUB Datasets 🚀
+We hope that the resources here will help you get the most out of HUB. Please browse the HUB
+Docs
+for details, raise an issue on
+GitHub
+for support, and join our
+Discord
+community for questions and discussions!
+Quickstart
+: Start training and deploying models in seconds.
+Datasets
+: Learn how to prepare and upload your datasets.
+Projects
+: Group your models into projects for improved organization.
+Models
+: Train models and export them to various formats for deployment.
+Pro
+: Level up your experience by becoming a Pro user.
+Cloud Training
+: Understand how to train models using our Cloud Training solution.
+Inference API
+: Understand how to use our Inference API.
+Teams
+: Collaborate effortlessly with your team.
+Integrations
+: Explore different integration options.
+Ultralytics HUB App
+: Learn about the Ultralytics HUB App, which allows you to run models directly on your mobile device.
+iOS
+: Explore CoreML acceleration on iPhones and iPads.
+Android
+: Explore TFLite acceleration on Android devices.
+FAQ
+How do I get started with Ultralytics HUB for training YOLO models?
+To get started with
+Ultralytics HUB
+, follow these steps:
+Sign Up:
+Create an account on the
+Ultralytics HUB
+.
+Upload Dataset:
+Navigate to the
+Datasets
+section to upload your custom dataset.
+Train Model:
+Go to the
+Models
+section and select a pre-trained YOLOv5, YOLOv8, or YOLO11 model to start training.
+Deploy Model:
+Once trained, preview and deploy your model using the
+Ultralytics HUB App
+for real-time tasks.
+For a detailed guide, refer to the
+Quickstart
+page.
+What are the benefits of using Ultralytics HUB over other AI platforms?
+Ultralytics HUB
+offers several unique benefits:
+User-Friendly Interface:
+Intuitive design for easy dataset uploads and model training.
+Pre-Trained Models:
+Access to a variety of pre-trained YOLO models including YOLOv5, YOLOv8, and YOLO11.
+Cloud Training:
+Seamless cloud training capabilities, detailed on the
+Cloud Training
+page.
+Real-Time Deployment:
+Effortlessly deploy models for real-time applications using the
+Ultralytics HUB App
+.
+Team Collaboration:
+Collaborate with your team efficiently through the
+Teams
+feature.
+No-Code Solution:
+Train and deploy advanced computer vision models without writing a single line of code.
+Explore more about the advantages in our
+Ultralytics HUB Blog
+.
+Can I use Ultralytics HUB for object detection on mobile devices?
+Yes, Ultralytics HUB supports object detection on mobile devices. You can run YOLO models on both iOS and Android devices using the Ultralytics HUB App. For more details:
+iOS:
+Learn about CoreML acceleration on iPhones and iPads in the
+iOS
+section.
+Android:
+Explore TFLite acceleration on Android devices in the
+Android
+section.
+How do I manage and organize my projects in Ultralytics HUB?
+Ultralytics HUB allows you to manage and organize your projects efficiently. You can group your models into projects for better organization. To learn more:
+Visit the
+Projects
+page for detailed instructions on creating, editing, and managing projects.
+Use the
+Teams
+feature to collaborate with team members and share resources.
+What integrations are available with Ultralytics HUB?
+Ultralytics HUB offers seamless integrations with various platforms to enhance your
+machine learning
+workflows. Some key integrations include:
+Roboflow:
+For dataset management and model training. Learn more on the
+Integrations
+page.
+Google Colab:
+Efficiently train models using Google Colab's cloud-based environment. Detailed steps are available in the
+Google Colab
+section.
+Weights & Biases:
+For enhanced experiment tracking and visualization. Explore the
+Weights & Biases
+integration.
+For a complete list of integrations, refer to the
+Integrations
+page.
+📅
+Created 1 year ago
+✏️
+Updated 6 months ago
+Tweet
+Share
+Comments
+Back to top

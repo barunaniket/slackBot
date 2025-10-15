@@ -1,0 +1,168 @@
+https://docs.ultralytics.com/zh/hub
+Ultralytics HUB
+中文
+|
+한국어
+|
+日本語
+|
+Русский
+|
+Deutsch
+|
+Français
+|
+Español
+|
+Português
+|
+Türkçe
+|
+Tiếng Việt
+|
+العربية
+👋 Ultralytics 团队向您问好！在过去的几个月里，我们一直努力推出
+Ultralytics HUB
+，这是一个新的 Web 工具，用于在一个地方训练和部署您所有的 YOLOv5、YOLOv8 和 YOLO11 🚀 模型！
+我们希望这里的资源能帮助您充分利用 HUB。请浏览 HUB
+文档
+了解详情，在
+GitHub
+上提出问题以获得支持，并加入我们的
+Discord
+社区进行提问和讨论！
+简介
+Ultralytics HUB
+的设计用户友好且直观，允许用户快速上传其数据集并训练新的 YOLO 模型。它还提供了一系列预训练模型可供选择，使用户可以非常轻松地入门。模型训练完成后，可以在
+Ultralytics HUB App
+中轻松预览，然后再部署用于实时分类、
+目标检测
+和
+实例分割
+任务。
+观看：
+如何使用 Ultralytics HUB 在自定义数据集上训练 Ultralytics YOLO11 | HUB 数据集 🚀
+我们希望这里的资源能帮助您充分利用 HUB。请浏览 HUB
+文档
+了解详情，在
+GitHub
+上提出问题以获得支持，并加入我们的
+Discord
+社区进行提问和讨论！
+快速入门
+：在几秒钟内开始训练和部署模型。
+数据集
+：了解如何准备和上传您的数据集。
+项目
+：将您的模型分组到项目中，以改进组织。
+模型
+：训练模型并将其导出为各种格式以进行部署。
+Pro
+：通过成为 Pro 用户来提升您的体验。
+云端训练
+：了解如何使用我们的云端训练解决方案来训练模型。
+推理 API
+：了解如何使用我们的推理 API。
+团队
+：与您的团队轻松协作。
+集成
+：探索不同的集成选项。
+Ultralytics HUB App
+：了解 Ultralytics HUB App，它允许您直接在移动设备上运行模型。
+iOS
+：探索 iPhone 和 iPad 上的 CoreML 加速。
+Android
+：探索 Android 设备上的 TFLite 加速。
+常见问题
+如何开始使用 Ultralytics HUB 训练 YOLO 模型？
+要开始使用
+Ultralytics HUB
+，请按照以下步骤操作：
+注册：
+在
+Ultralytics HUB
+上创建一个帐户。
+上传数据集：
+导航到
+数据集
+部分以上传您的自定义数据集。
+训练模型：
+转到
+模型
+部分，然后选择一个预训练的 YOLOv5、YOLOv8 或 YOLO11 模型以开始训练。
+部署模型：
+训练完成后，使用
+Ultralytics HUB App
+预览和部署您的模型以执行实时任务。
+有关详细指南，请参阅
+快速入门
+页面。
+与其他 AI 平台相比，使用 Ultralytics HUB 有哪些优势？
+Ultralytics HUB
+提供了几个独特的优势：
+用户友好的界面：
+直观的设计，便于数据集上传和模型训练。
+预训练模型：
+访问各种预训练的 YOLO 模型，包括 YOLOv5、YOLOv8 和 YOLO11。
+云端训练：
+无缝的云端训练功能，详见
+云端训练
+页面。
+实时部署：
+使用
+Ultralytics HUB App
+轻松部署模型以进行实时应用。
+团队协作：
+通过
+团队
+功能与您的团队高效协作。
+无代码解决方案：
+无需编写任何代码即可训练和部署高级计算机视觉模型。
+在我们的
+Ultralytics HUB 博客
+中了解更多关于优势的信息。
+我可以在移动设备上使用 Ultralytics HUB 进行目标检测吗？
+是的，Ultralytics HUB 支持移动设备上的目标检测。您可以使用 Ultralytics HUB 应用程序在 iOS 和 Android 设备上运行 YOLO 模型。更多详情：
+iOS：
+在
+iOS
+部分了解有关 iPhone 和 iPad 上的 CoreML 加速的信息。
+Android：
+在
+Android
+部分探索 Android 设备上的 TFLite 加速。
+如何在 Ultralytics HUB 中管理和组织我的项目？
+Ultralytics HUB 允许您高效地管理和组织您的项目。您可以将您的模型分组到项目中，以便更好地组织。要了解更多信息：
+请访问
+项目
+页面，获取关于创建、编辑和管理项目的详细说明。
+使用
+团队
+功能与团队成员协作并共享资源。
+Ultralytics HUB 有哪些集成可用？
+Ultralytics HUB 提供与各种平台的无缝集成，以增强您的
+机器学习
+工作流程。一些关键集成包括：
+Roboflow：
+用于数据集管理和模型训练。在“
+集成
+”页面上了解更多信息。
+Google Colab：
+使用 Google Colab 的云环境高效地训练模型。详细步骤可在
+Google Colab
+部分中找到。
+Weights & Biases：
+用于增强的实验跟踪和可视化。探索
+Weights & Biases
+集成。
+有关集成的完整列表，请参阅
+集成
+页面。
+📅
+创建于 1 年前
+✏️
+更新于 6 个月前
+Tweet
+分享
+评论
+回到顶部

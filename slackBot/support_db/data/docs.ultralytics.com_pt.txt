@@ -1,0 +1,272 @@
+https://docs.ultralytics.com/pt
+中文
+|
+한국어
+|
+日本語
+|
+Русский
+|
+Deutsch
+|
+Français
+|
+Español
+|
+Português
+|
+Türkçe
+|
+Tiếng Việt
+|
+العربية
+Início
+Apresentamos o
+Ultralytics
+YOLO11
+, a versão mais recente do aclamado modelo de detecção de objetos em tempo real e segmentação de imagens. O YOLO11 é construído sobre avanços de ponta em
+aprendizado profundo
+e
+visão computacional
+, oferecendo desempenho incomparável em termos de velocidade e
+precisão
+. Seu design simplificado o torna adequado para diversas aplicações e facilmente adaptável a diferentes plataformas de hardware, desde dispositivos de borda até APIs de nuvem.
+Explore a documentação Ultralytics, um recurso abrangente projetado para ajudá-lo a entender e utilizar seus recursos e funcionalidades. Seja você um profissional experiente em
+machine learning
+ou novo na área, este hub tem como objetivo maximizar o potencial do YOLO em seus projetos.
+Por Onde Começar
+Começando
+Instalar
+ultralytics
+com pip e comece em minutos a treinar um modelo YOLO
+Início Rápido
+Prever
+Preveja em novas imagens, vídeos e transmissões com YOLO
+Saiba mais
+Treinar um Modelo
+Treine um novo modelo YOLO em seu próprio conjunto de dados personalizado do zero ou carregue e treine em um modelo pré-treinado
+Saiba mais
+Explore Tarefas de Visão Computacional
+Descubra as tarefas do YOLO, como detectar, segmentar, classificar, pose, OBB e rastrear
+Explorar Tarefas
+Explorar YOLO11 🚀
+Descubra os mais recentes modelos YOLO11 de última geração da Ultralytics e suas capacidades
+Modelos YOLO11 🚀
+Código Aberto, AGPL-3.0
+A Ultralytics oferece duas licenças YOLO: AGPL-3.0 e Enterprise. Explore YOLO no
+GitHub
+.
+Licença YOLO
+Assista:
+Como Treinar um modelo YOLO11 em Seu Conjunto de Dados Personalizado em
+Google Colab
+.
+YOLO: Uma Breve História
+YOLO
+(You Only Look Once), um modelo popular de
+detecção de objetos
+e
+segmentação de imagens
+, foi desenvolvido por Joseph Redmon e Ali Farhadi na Universidade de Washington. Lançado em 2015, o YOLO ganhou popularidade por sua alta velocidade e precisão.
+O
+YOLOv2
+, lançado em 2016, aprimorou o modelo original incorporando normalização em lote, caixas delimitadoras (anchor boxes) e agrupamentos de dimensões.
+YOLOv3
+, lançado em 2018, aprimorou ainda mais o desempenho do modelo usando uma rede de backbone mais eficiente, múltiplas âncoras e agrupamento de pirâmide espacial.
+O
+YOLOv4
+foi lançado em 2020, introduzindo inovações como
+aumento de dados
+Mosaic, um novo cabeçalho de detecção sem âncora e uma nova
+função de perda
+.
+YOLOv5
+melhorou ainda mais o desempenho do modelo e adicionou novos recursos, como otimização de hiperparâmetros, rastreamento de experimentos integrado e exportação automática para formatos de exportação populares.
+YOLOv6
+foi tornado de código aberto pela
+Meituan
+em 2022 e é usado em muitos dos robôs de entrega autônomos da empresa.
+O
+YOLOv7
+adicionou tarefas adicionais, como estimativa de pose no conjunto de dados de pontos-chave COCO.
+YOLOv8
+lançado em 2023 pela Ultralytics, introduziu novos recursos e melhorias para desempenho, flexibilidade e eficiência aprimorados, oferecendo suporte a uma gama completa de tarefas de visão de IA.
+O
+YOLOv9
+introduz métodos inovadores como Programmable Gradient Information (PGI) e Generalized Efficient Layer Aggregation Network (GELAN).
+O
+YOLOv10
+criado por pesquisadores da
+Universidade de Tsinghua
+usando o
+pacote Python
+Ultralytics
+, fornece avanços de
+detecção de objetos
+em tempo real, introduzindo um cabeçalho End-to-End que elimina os requisitos de Supressão Não Máxima (NMS).
+YOLO11
+🚀:
+Os modelos YOLO mais recentes da Ultralytics oferecem desempenho de última geração (SOTA) em várias tarefas, incluindo
+deteção de objetos
+,
+segmentação
+,
+estimativa de pose
+,
+rastreamento
+e
+classificação
+, aproveitando os recursos em diversos aplicativos e domínios de IA.
+YOLO26
+⚠️ Em breve
+: O modelo YOLO de próxima geração da Ultralytics otimizado para implantação de borda com inferência de ponta a ponta sem NMS.
+Licenças YOLO: Como o Ultralytics YOLO é licenciado?
+A Ultralytics oferece duas opções de licenciamento para acomodar diversos casos de uso:
+Licença AGPL-3.0
+: Esta licença de código aberto
+aprovada pela OSI
+é ideal para estudantes e entusiastas, promovendo a colaboração aberta e o compartilhamento de conhecimento. Consulte o arquivo
+LICENSE
+para obter mais detalhes.
+Licença Empresarial
+: Projetada para uso comercial, esta licença permite a integração perfeita do software Ultralytics e modelos de IA em bens e serviços comerciais, ignorando os requisitos de código aberto da AGPL-3.0. Se o seu cenário envolve incorporar nossas soluções em uma oferta comercial, entre em contato através do
+Licenciamento Ultralytics
+.
+Nossa estratégia de licenciamento foi projetada para garantir que quaisquer melhorias em nossos projetos de código aberto sejam devolvidas à comunidade. Mantemos os princípios do código aberto perto de nossos corações ❤️, e nossa missão é garantir que nossas contribuições possam ser utilizadas e expandidas de maneiras que sejam benéficas para todos.
+A Evolução da Detecção de Objetos
+A detecção de objetos evoluiu significativamente ao longo dos anos, desde técnicas tradicionais de visão computacional até modelos avançados de aprendizado profundo. A
+família de modelos YOLO
+tem estado na vanguarda desta evolução, consistentemente ultrapassando os limites do que é possível na detecção de objetos em tempo real.
+A abordagem exclusiva do YOLO trata a detecção de objetos como um único problema de regressão, prevendo
+caixas delimitadoras
+e probabilidades de classe diretamente de imagens completas em uma única avaliação. Este método revolucionário tornou os modelos YOLO significativamente mais rápidos do que os detectores de dois estágios anteriores, mantendo alta precisão.
+A cada nova versão, o YOLO introduziu melhorias arquitetônicas e técnicas inovadoras que aprimoraram o desempenho em várias métricas. O YOLO11 continua essa tradição, incorporando os mais recentes avanços na pesquisa de visão computacional, oferecendo compensações de velocidade-precisão ainda melhores para aplicações no mundo real.
+FAQ
+O que é Ultralytics YOLO e como ele melhora a detecção de objetos?
+Ultralytics YOLO é o mais recente avanço na aclamada série YOLO (You Only Look Once) para detecção de objetos e segmentação de imagem em tempo real. Ele se baseia em versões anteriores, introduzindo novos recursos e melhorias para desempenho, flexibilidade e eficiência aprimorados. YOLO suporta várias
+tarefas de visão de IA
+, como detecção, segmentação, estimativa de pose, rastreamento e classificação. Sua arquitetura de última geração garante velocidade e precisão superiores, tornando-o adequado para diversas aplicações, incluindo dispositivos de borda e APIs de nuvem.
+Como posso começar com a instalação e configuração do YOLO?
+Começar a usar o YOLO é rápido e direto. Você pode instalar o pacote Ultralytics usando o
+pip
+e começar a usar em minutos. Aqui está um comando de instalação básico:
+Instalação usando pip
+CLI
+pip
+install
+ultralytics
+Para um guia passo a passo completo, visite a nossa página de
+Início Rápido
+. Este recurso irá ajudá-lo com as instruções de instalação, configuração inicial e execução do seu primeiro modelo.
+Como posso treinar um modelo YOLO personalizado no meu conjunto de dados?
+Treinar um modelo YOLO personalizado em seu conjunto de dados envolve algumas etapas detalhadas:
+Prepare seu conjunto de dados anotado.
+Configure os parâmetros de treinamento em um arquivo YAML.
+Use o comando
+yolo TASK train
+para iniciar o treinamento. (Cada
+TASK
+tem seu próprio argumento)
+Aqui está um exemplo de código para a Tarefa de Detecção de Objetos:
+Exemplo de Treinamento para a Tarefa de Detecção de Objetos
+Python
+CLI
+from
+ultralytics
+import
+YOLO
+# Load a pre-trained YOLO model (you can choose n, s, m, l, or x versions)
+model
+=
+YOLO
+(
+"yolo11n.pt"
+)
+# Start training on your custom dataset
+model
+.
+train
+(
+data
+=
+"path/to/dataset.yaml"
+,
+epochs
+=
+100
+,
+imgsz
+=
+640
+)
+# Train a YOLO model from the command line
+yolo
+detect
+train
+data
+=
+path/to/dataset.yaml
+epochs
+=
+100
+imgsz
+=
+640
+Para um guia detalhado, consulte o nosso guia
+Treinar um Modelo
+, que inclui exemplos e dicas para otimizar o seu processo de treinamento.
+Quais são as opções de licenciamento disponíveis para o Ultralytics YOLO?
+A Ultralytics oferece duas opções de licenciamento para YOLO:
+Licença AGPL-3.0
+: Esta licença de código aberto é ideal para uso educacional e não comercial, promovendo a colaboração aberta.
+Licença Empresarial
+: Esta é projetada para aplicações comerciais, permitindo a integração perfeita do software Ultralytics em produtos comerciais sem as restrições da licença AGPL-3.0.
+Para mais detalhes, visite a nossa página de
+Licenciamento
+.
+Como o Ultralytics YOLO pode ser usado para rastreamento de objetos em tempo real?
+O Ultralytics YOLO suporta o rastreamento multi-objeto eficiente e personalizável. Para utilizar as capacidades de rastreamento, pode usar o comando
+yolo track
+comando, como mostrado abaixo:
+Exemplo para Rastreamento de Objetos em um Vídeo
+Python
+CLI
+from
+ultralytics
+import
+YOLO
+# Load a pre-trained YOLO model
+model
+=
+YOLO
+(
+"yolo11n.pt"
+)
+# Start tracking objects in a video
+# You can also use live video streams or webcam input
+model
+.
+track
+(
+source
+=
+"path/to/video.mp4"
+)
+# Perform object tracking on a video from the command line
+# You can specify different sources like webcam (0) or RTSP streams
+yolo
+track
+source
+=
+path/to/video.mp4
+Para um guia detalhado sobre como configurar e executar o rastreamento de objetos, consulte a nossa documentação do
+Modo de Rastreamento
+, que explica a configuração e as aplicações práticas em cenários em tempo real.
+📅
+Criado há 1 ano
+✏️
+Atualizado há 1 dia
+Tweet
+Compartilhar
+Comentários
+Voltar ao topo

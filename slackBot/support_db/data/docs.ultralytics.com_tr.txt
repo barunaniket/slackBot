@@ -1,0 +1,269 @@
+https://docs.ultralytics.com/tr
+中文
+|
+한국어
+|
+日本語
+|
+Русский
+|
+Deutsch
+|
+Français
+|
+Español
+|
+Português
+|
+Türkçe
+|
+Tiếng Việt
+|
+العربية
+Giriş
+Beğeni toplayan gerçek zamanlı nesne algılama ve görüntü segmentasyon modelinin en son sürümü olan
+Ultralytics
+YOLO11
+ile tanışın. YOLO11,
+derin öğrenme
+ve
+bilgisayarlı görü
+alanındaki en son gelişmelere dayanmaktadır ve hız ve
+doğruluk
+açısından benzersiz bir performans sunar. Modern tasarımı, onu çeşitli uygulamalar için uygun hale getirir ve uç cihazlardan bulut API'lerine kadar farklı donanım platformlarına kolayca uyarlanabilir.
+Özelliklerini ve yeteneklerini anlamanıza ve kullanmanıza yardımcı olmak için tasarlanmış kapsamlı bir kaynak olan Ultralytics Belgelerini keşfedin. İster deneyimli bir
+makine öğrenimi
+uygulayıcısı olun, ister bu alanda yeni olun, bu merkez YOLO'nun projelerinizdeki potansiyelini en üst düzeye çıkarmayı amaçlar.
+Nereden Başlamalı
+Başlarken
+Kurulum
+ultralytics
+pip ile bir YOLO modeli eğitmek için dakikalar içinde çalışmaya başlayın
+Hızlı Başlangıç
+Tahmin et
+YOLO ile yeni resimler, videolar ve yayınlar üzerinde tahmin yapın
+Daha fazla bilgi edinin
+Model Eğitme
+Kendi özel veri kümeniz üzerinde sıfırdan yeni bir YOLO modeli eğitin veya önceden eğitilmiş bir modeli yükleyip üzerinde eğitin
+Daha fazla bilgi edinin
+Bilgisayar Görüşü Görevlerini Keşfedin
+Algılama, segmentasyon, sınıflandırma, poz, OBB ve izleme gibi YOLO görevlerini keşfedin
+Görevleri Keşfedin
+YOLO11 keşfedin 🚀
+Ultralytics'in en son teknolojiye sahip YOLO11 modellerini ve yeteneklerini keşfedin
+YOLO11 Modelleri 🚀
+Açık Kaynak, AGPL-3.0
+Ultralytics iki YOLO lisansı sunar: AGPL-3.0 ve Enterprise. YOLO'yu
+GitHub
+üzerinde keşfedin.
+YOLO Lisansı
+İzle:
+Özel Veri Kümeniz Üzerinde Bir YOLO11 Modeli Nasıl Eğitilir?
+Google Colab
+.
+YOLO: Kısa Bir Tarihçe
+YOLO
+(You Only Look Once), popüler bir
+nesne algılama
+ve
+görüntü segmentasyonu
+modeli, Joseph Redmon ve Ali Farhadi tarafından Washington Üniversitesi'nde geliştirilmiştir. 2015'te piyasaya sürülen YOLO, yüksek hızı ve doğruluğu nedeniyle popülerlik kazanmıştır.
+2016'da piyasaya sürülen
+YOLOv2
+, toplu normalleştirme, çapa kutuları ve boyut kümeleri ekleyerek orijinal modeli geliştirmiştir.
+2018'de piyasaya sürülen
+YOLOv3
+, daha verimli bir backbone ağı, çoklu bağlantılar ve uzamsal piramit havuzlama kullanarak modelin performansını daha da artırdı.
+YOLOv4
+2020'de piyasaya sürüldü ve Mozaik
+veri artırma
+, yeni bir çapa içermeyen algılama başlığı ve yeni bir
+kayıp fonksiyonu
+gibi yenilikler getirdi.
+YOLOv5
+, modelin performansını daha da artırdı ve hiperparametre optimizasyonu, entegre deney takibi ve popüler dışa aktarma biçimlerine otomatik dışa aktarma gibi yeni özellikler ekledi.
+YOLOv6
+, 2022'de
+Meituan
+tarafından açık kaynaklı hale getirilmiştir ve şirketin birçok otonom teslimat robotunda kullanılmaktadır.
+YOLOv7
+, COCO anahtar noktaları veri kümesinde poz tahmini gibi ek görevler ekledi.
+YOLOv8
+, 2023'te Ultralytics tarafından yayınlanmış olup, gelişmiş performans, esneklik ve verimlilik için yeni özellikler ve iyileştirmeler sunarak çok çeşitli vizyon yapay zeka görevlerini destekler.
+YOLOv9
+, Programlanabilir Gradyan Bilgisi (PGI) ve Genelleştirilmiş Verimli Katman Toplama Ağı (GELAN) gibi yenilikçi yöntemler sunar.
+YOLOv10
+,
+Tsinghua Üniversitesi'nden
+araştırmacılar tarafından
+Ultralytics
+Python paketi
+kullanılarak oluşturulmuştur ve Non-Maximum Suppression (NMS) gereksinimlerini ortadan kaldıran Uçtan Uca bir başlık sunarak gerçek zamanlı
+nesne algılama
+geliştirmeleri sağlar.
+YOLO11
+🚀:
+Ultralytics'in en yeni YOLO modelleri,
+nesne algılama
+,
+segmentasyon
+,
+poz tahmini
+,
+izleme
+ve
+sınıflandırma
+dahil olmak üzere birçok görevde en son teknoloji (SOTA) performansı sunarak çeşitli yapay zeka uygulamaları ve alanlarındaki yeteneklerden yararlanır.
+YOLO26
+⚠️ Çok Yakında
+: Ultralytics'in uçtan uca NMS'siz çıkarım ile uç dağıtım için optimize edilmiş yeni nesil YOLO modeli.
+YOLO Lisansları: Ultralytics YOLO nasıl lisanslanmıştır?
+Ultralytics, çeşitli kullanım durumlarına uyum sağlamak için iki lisanslama seçeneği sunar:
+AGPL-3.0 Lisansı
+: Bu
+OSI onaylı
+açık kaynaklı lisans, açık işbirliğini ve bilgi paylaşımını teşvik ederek öğrenciler ve meraklılar için idealdir. Daha fazla ayrıntı için
+LİSANS
+dosyasına bakın.
+Kurumsal Lisans
+: Ticari kullanım için tasarlanan bu lisans, Ultralytics yazılımının ve yapay zeka modellerinin ticari mal ve hizmetlere sorunsuz bir şekilde entegre edilmesine izin vererek AGPL-3.0'ın açık kaynak gereksinimlerini ortadan kaldırır. Çözümlerimizi ticari bir teklife yerleştirmeyi içeren bir senaryonuz varsa,
+Ultralytics Lisanslama
+aracılığıyla bize ulaşın.
+Lisanslama stratejimiz, açık kaynak projelerimizdeki herhangi bir iyileştirmenin topluluğa geri dönmesini sağlamak için tasarlanmıştır. Açık kaynak ilkelerini kalbimize yakın tutuyoruz ❤️ ve misyonumuz, katkılarımızın herkese faydalı olacak şekilde kullanılabilmesini ve genişletilebilmesini garanti etmektir.
+Nesne Algılamanın Evrimi
+Nesne tespiti, geleneksel bilgisayar görüşü tekniklerinden gelişmiş derin öğrenme modellerine kadar yıllar içinde önemli ölçüde gelişti.
+YOLO model ailesi
+, gerçek zamanlı nesne tespitinde mümkün olanın sınırlarını sürekli olarak zorlayarak bu evrimin ön saflarında yer almıştır.
+YOLO'nun benzersiz yaklaşımı, nesne tespitini tek bir regresyon problemi olarak ele alır ve
+sınırlayıcı kutuları
+ve sınıf olasılıklarını tek bir değerlendirmede doğrudan tam görüntülerden tahmin eder. Bu devrim niteliğindeki yöntem, YOLO modellerini yüksek doğruluğu korurken önceki iki aşamalı dedektörlerden önemli ölçüde daha hızlı hale getirmiştir.
+YOLO, her yeni sürümde, çeşitli metriklerde performansı artıran mimari iyileştirmeler ve yenilikçi teknikler sunmuştur. YOLO11, bilgisayar görüşü araştırmalarındaki en son gelişmeleri bir araya getirerek bu geleneği sürdürüyor ve gerçek dünya uygulamaları için daha da iyi hız-doğruluk dengeleri sunuyor.
+SSS
+Ultralytics YOLO nedir ve nesne tespitini nasıl geliştirir?
+Ultralytics YOLO, gerçek zamanlı nesne algılama ve görüntü segmentasyonu için beğenilen YOLO (You Only Look Once) serisindeki en son gelişmedir. Gelişmiş performans, esneklik ve verimlilik için yeni özellikler ve iyileştirmeler sunarak önceki sürümler üzerine inşa edilmiştir. YOLO, algılama, segmentasyon, poz tahmini, izleme ve sınıflandırma gibi çeşitli
+vizyon yapay zeka görevlerini
+destekler. Son teknoloji ürünü mimarisi, üstün hız ve doğruluk sağlayarak uç cihazlar ve bulut API'leri dahil olmak üzere çeşitli uygulamalar için uygun hale getirir.
+YOLO kurulumu ve yapılandırmasına nasıl başlayabilirim?
+YOLO'ya başlamak hızlı ve kolaydır.
+pip
+kullanarak Ultralytics paketini yükleyebilir ve dakikalar içinde çalışmaya başlayabilirsiniz. İşte temel bir kurulum komutu:
+pip kullanılarak kurulum
+CLI
+pip
+install
+ultralytics
+Kapsamlı, adım adım bir kılavuz için
+Hızlı Başlangıç
+sayfamızı ziyaret edin. Bu kaynak, kurulum talimatları, ilk kurulum ve ilk modelinizi çalıştırma konusunda size yardımcı olacaktır.
+Veri kümem üzerinde özel bir YOLO modelini nasıl eğitebilirim?
+Veri kümeniz üzerinde özel bir YOLO modeli eğitmek, birkaç ayrıntılı adım içerir:
+Ek açıklamalı veri kümenizi hazırlayın.
+Bir YAML dosyasında eğitim parametrelerini yapılandırın.
+Şunu kullanın:
+yolo TASK train
+eğitime başlamak için komut. (Her
+TASK
+kendi argümanına sahiptir)
+İşte Nesne Algılama Görevi için örnek kod:
+Nesne Algılama Görevi için Eğitim Örneği
+Python
+CLI
+from
+ultralytics
+import
+YOLO
+# Load a pre-trained YOLO model (you can choose n, s, m, l, or x versions)
+model
+=
+YOLO
+(
+"yolo11n.pt"
+)
+# Start training on your custom dataset
+model
+.
+train
+(
+data
+=
+"path/to/dataset.yaml"
+,
+epochs
+=
+100
+,
+imgsz
+=
+640
+)
+# Train a YOLO model from the command line
+yolo
+detect
+train
+data
+=
+path/to/dataset.yaml
+epochs
+=
+100
+imgsz
+=
+640
+Ayrıntılı bir inceleme için, eğitim sürecinizi optimize etmeye yönelik örnekler ve ipuçları içeren
+Model Eğitme
+kılavuzumuza göz atın.
+Ultralytics YOLO için hangi lisanslama seçenekleri mevcuttur?
+Ultralytics, YOLO için iki lisanslama seçeneği sunar:
+AGPL-3.0 Lisansı
+: Bu açık kaynaklı lisans, açık işbirliğini teşvik ederek eğitimsel ve ticari olmayan kullanım için idealdir.
+Kurumsal Lisans
+: Bu, ticari uygulamalar için tasarlanmıştır ve Ultralytics yazılımının AGPL-3.0 lisansının kısıtlamaları olmaksızın ticari ürünlere sorunsuz bir şekilde entegre edilmesine olanak tanır.
+Daha fazla ayrıntı için
+Lisanslama
+sayfamızı ziyaret edin.
+Ultralytics YOLO gerçek zamanlı nesne takibi için nasıl kullanılabilir?
+Ultralytics YOLO, verimli ve özelleştirilebilir çoklu nesne takibini destekler. İzleme özelliklerini kullanmak için aşağıdaki gibi
+yolo track
+komutu, aşağıda gösterildiği gibi:
+Bir Video Üzerinde Nesne Takibi Örneği
+Python
+CLI
+from
+ultralytics
+import
+YOLO
+# Load a pre-trained YOLO model
+model
+=
+YOLO
+(
+"yolo11n.pt"
+)
+# Start tracking objects in a video
+# You can also use live video streams or webcam input
+model
+.
+track
+(
+source
+=
+"path/to/video.mp4"
+)
+# Perform object tracking on a video from the command line
+# You can specify different sources like webcam (0) or RTSP streams
+yolo
+track
+source
+=
+path/to/video.mp4
+Nesne takibini ayarlama ve çalıştırma hakkında ayrıntılı bir kılavuz için, gerçek zamanlı senaryolardaki yapılandırmayı ve pratik uygulamaları açıklayan
+İzleme Modu
+belgelerimize göz atın.
+📅
+1 yıl önce oluşturuldu
+✏️
+1 gün önce güncellendi
+Tweet
+Paylaş
+Yorumlar
+Başa dön

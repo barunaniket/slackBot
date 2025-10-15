@@ -1,0 +1,269 @@
+https://docs.ultralytics.com/ko
+中文
+|
+한국어
+|
+日本語
+|
+Русский
+|
+Deutsch
+|
+Français
+|
+Español
+|
+Português
+|
+Türkçe
+|
+Tiếng Việt
+|
+العربية
+홈
+최신 버전의 실시간 객체 감지 및 이미지 분할 모델인
+Ultralytics
+YOLO11
+을 소개합니다. YOLO11은 최첨단
+딥러닝
+및
+컴퓨터 비전
+기술 발전을 기반으로 구축되어 속도와
+정확성
+면에서 탁월한 성능을 제공합니다. 간소화된 디자인 덕분에 엣지 장치에서 클라우드 API에 이르기까지 다양한 애플리케이션에 적합하며 다양한 하드웨어 플랫폼에 쉽게 적용할 수 있습니다.
+Ultralytics Docs를 살펴보세요. 이 포괄적인 리소스는 Ultralytics의 기능과 성능을 이해하고 활용할 수 있도록 설계되었습니다. 숙련된
+머신 러닝
+전문가이든 이 분야를 처음 접하는 사람이든, 이 허브는 프로젝트에서 YOLO의 잠재력을 극대화하는 것을 목표로 합니다.
+시작하기
+시작하기
+설치
+ultralytics
+pip를 사용하여 몇 분 안에 YOLO 모델을 훈련하고 실행할 수 있습니다.
+빠른 시작
+예측
+YOLO를 사용하여 새로운 이미지, 비디오 및 스트림에서 예측합니다.
+자세히 알아보기
+모델 훈련
+자체 사용자 정의 데이터 세트에서 새로운 YOLO 모델을 처음부터 훈련하거나 사전 훈련된 모델을 로드하여 훈련합니다.
+자세히 알아보기
+컴퓨터 비전 작업 살펴보기
+detect, segment, classify, pose, OBB 및 track과 같은 YOLO 작업을 찾아보십시오.
+작업 살펴보기
+YOLO11 살펴보기 🚀
+Ultralytics의 최신 최첨단 YOLO11 모델과 그 기능을 찾아보십시오.
+YOLO11 모델 🚀
+오픈 소스, AGPL-3.0
+Ultralytics는 두 가지 YOLO 라이선스(AGPL-3.0 및 Enterprise)를 제공합니다.
+GitHub
+에서 YOLO를 살펴보세요.
+YOLO 라이선스
+참고:
+사용자 정의 데이터 세트에서 YOLO11 모델을 훈련하는 방법
+Google Colab
+.
+YOLO: 간략한 역사
+YOLO
+(You Only Look Once)는 널리 사용되는
+객체 감지
+및
+이미지 분할
+모델로, 워싱턴 대학교의 Joseph Redmon과 Ali Farhadi가 개발했습니다. 2015년에 출시된 YOLO는 빠른 속도와 정확성으로 인기를 얻었습니다.
+2016년에 출시된
+YOLOv2
+는 배치 정규화, 앵커 박스 및 차원 클러스터를 통합하여 원래 모델을 개선했습니다.
+2018년에 출시된
+YOLOv3
+는 더욱 효율적인 백본 네트워크, 다중 앵커 및 공간 피라미드 풀링을 사용하여 모델의 성능을 더욱 향상시켰습니다.
+YOLOv4
+는 2020년에 Mosaic
+데이터 증강
+, 새로운 앵커 프리 감지 헤드 및 새로운
+손실 함수
+와 같은 혁신을 도입했습니다.
+YOLOv5
+는 모델의 성능을 더욱 개선하고 하이퍼파라미터 최적화, 통합 실험 추적, 널리 사용되는 내보내기 형식으로의 자동 내보내기 등의 새로운 기능을 추가했습니다.
+YOLOv6
+는 2022년에
+Meituan
+에 의해 오픈 소스화되었으며, 회사의 많은 자율 배달 로봇에 사용됩니다.
+YOLOv7
+은 COCO 키포인트 데이터 세트에서 포즈 추정과 같은 추가 작업을 수행했습니다.
+YOLOv8
+은(는) 2023년에 Ultralytics에서 출시되었으며, 향상된 성능, 유연성 및 효율성을 위해 새로운 기능과 개선 사항을 도입하여 모든 범위의 비전 AI 작업을 지원합니다.
+YOLOv9
+는 PGI(Programmable Gradient Information) 및 GELAN(Generalized Efficient Layer Aggregation Network)과 같은 혁신적인 방법을 도입했습니다.
+칭화대학교
+연구진이
+Ultralytics
+Python 패키지
+를 사용하여 개발한
+YOLOv10
+은 Non-Maximum Suppression (NMS) 요구 사항을 제거하는 End-to-End 헤드를 도입하여 실시간
+객체 감지
+발전을 제공합니다.
+YOLO11
+🚀:
+다양한 AI 애플리케이션과 도메인에서 기능을 활용하여
+물체 감지
+,
+세분화
+,
+포즈 추정
+,
+추적
+및
+분류를
+비롯한 여러 작업에서 최신(SOTA) 성능을 제공하는 Ultralytics 최신 YOLO 모델입니다.
+YOLO26
+⚠️ 출시 예정
+: 엔드투엔드 NMS가 필요 없는 추론으로 엣지 배포에 최적화된 Ultralytics 차세대 YOLO 모델입니다.
+YOLO 라이선스: Ultralytics YOLO 라이선스는 어떻게 되나요?
+Ultralytics는 다양한 사용 사례를 수용하기 위해 두 가지 라이선스 옵션을 제공합니다.
+AGPL-3.0 라이선스
+: 이
+OSI 승인
+오픈 소스 라이선스는 학생과 매니아에게 적합하며, 개방형 협업과 지식 공유를 장려합니다. 자세한 내용은
+LICENSE
+파일을 참조하십시오.
+Enterprise 라이선스
+: 상업적 용도로 설계된 이 라이선스는 AGPL-3.0의 오픈 소스 요구 사항을 우회하여 Ultralytics 소프트웨어 및 AI 모델을 상업 제품 및 서비스에 원활하게 통합할 수 있도록 허용합니다. 당사의 솔루션을 상업적 제품에 포함하는 경우
+Ultralytics 라이선스
+를 통해 문의하십시오.
+당사의 라이선스 전략은 오픈 소스 프로젝트에 대한 모든 개선 사항이 커뮤니티에 반환되도록 설계되었습니다. 우리는 오픈 소스의 원칙을 소중히 여기며 ❤️, 우리의 기여가 모든 사람에게 유익한 방식으로 활용되고 확장될 수 있도록 보장하는 것이 우리의 목표입니다.
+객체 감지의 진화
+객체 감지는 전통적인 컴퓨터 비전 기술에서 고급 딥 러닝 모델에 이르기까지 수년에 걸쳐 크게 발전했습니다.
+YOLO 모델 제품군
+은 이러한 발전의 최전선에 있었으며 실시간 객체 감지에서 가능한 것의 경계를 지속적으로 확장하고 있습니다.
+YOLO의 고유한 접근 방식은 객체 감지를 단일 회귀 문제로 취급하여 한 번의 평가에서 전체 이미지에서 직접
+경계 상자
+와 클래스 확률을 예측합니다. 이 혁신적인 방법은 YOLO 모델을 이전의 2단계 감지기보다 훨씬 빠르게 만들면서도 높은 정확도를 유지합니다.
+YOLO는 새로운 버전이 나올 때마다 아키텍처 개선과 혁신적인 기술을 도입하여 다양한 지표에서 성능을 향상시켰습니다. YOLO11은 컴퓨터 비전 연구의 최신 발전을 통합하여 실제 애플리케이션에서 훨씬 더 나은 속도-정확도 균형을 제공함으로써 이러한 전통을 이어갑니다.
+FAQ
+Ultralytics YOLO는 무엇이며 어떻게 객체 탐지를 개선합니까?
+Ultralytics YOLO는 실시간 객체 감지 및 이미지 분할을 위한 유명한 YOLO (You Only Look Once) 시리즈의 최신 기술입니다. 향상된 성능, 유연성 및 효율성을 위해 새로운 기능과 개선 사항을 도입하여 이전 버전을 기반으로 합니다. YOLO는 감지, 분할, 포즈 추정, 추적 및 분류와 같은 다양한
+비전 AI 작업
+을 지원합니다. 최첨단 아키텍처는 뛰어난 속도와 정확성을 보장하여 에지 장치 및 클라우드 API를 포함한 다양한 애플리케이션에 적합합니다.
+YOLO 설치 및 설정을 시작하려면 어떻게 해야 합니까?
+YOLO 시작하기는 빠르고 간단합니다.
+pip
+를 사용하여 Ultralytics 패키지를 설치하고 몇 분 안에 시작할 수 있습니다. 다음은 기본적인 설치 명령입니다.
+pip를 사용한 설치
+CLI
+pip
+install
+ultralytics
+자세한 단계별 가이드는
+Quickstart
+페이지를 참조하세요. 이 리소스는 설치 지침, 초기 설정 및 첫 번째 모델 실행에 도움이 될 것입니다.
+내 데이터 세트에 사용자 정의 YOLO 모델을 훈련하려면 어떻게 해야 합니까?
+데이터 세트에서 사용자 정의 YOLO 모델을 훈련하려면 몇 가지 자세한 단계가 필요합니다.
+어노테이션된 데이터 세트를 준비합니다.
+YAML 파일에서 훈련 파라미터를 구성합니다.
+다음을 사용하여
+yolo TASK train
+명령을 사용하여 훈련을 시작합니다. (각각
+TASK
+자체 인수를 가집니다.)
+다음은 객체 감지 작업에 대한 예제 코드입니다.
+객체 감지 작업에 대한 훈련 예제
+Python
+CLI
+from
+ultralytics
+import
+YOLO
+# Load a pre-trained YOLO model (you can choose n, s, m, l, or x versions)
+model
+=
+YOLO
+(
+"yolo11n.pt"
+)
+# Start training on your custom dataset
+model
+.
+train
+(
+data
+=
+"path/to/dataset.yaml"
+,
+epochs
+=
+100
+,
+imgsz
+=
+640
+)
+# Train a YOLO model from the command line
+yolo
+detect
+train
+data
+=
+path/to/dataset.yaml
+epochs
+=
+100
+imgsz
+=
+640
+자세한 내용은 훈련 프로세스 최적화를 위한 예제와 팁이 포함된
+모델 훈련
+가이드를 확인하십시오.
+Ultralytics YOLO에 사용할 수 있는 라이선스 옵션은 무엇입니까?
+Ultralytics는 YOLO에 대해 두 가지 라이선스 옵션을 제공합니다.
+AGPL-3.0 라이선스
+: 이 오픈 소스 라이선스는 교육 및 비상업적 용도에 적합하며 개방형 협업을 장려합니다.
+Enterprise 라이선스
+: 상업용 애플리케이션을 위해 설계되었으며 AGPL-3.0 라이선스의 제한 없이 Ultralytics 소프트웨어를 상업용 제품에 원활하게 통합할 수 있습니다.
+자세한 내용은
+라이선스
+페이지를 참조하십시오.
+Ultralytics YOLO를 실시간 객체 추적에 어떻게 사용할 수 있습니까?
+Ultralytics YOLO는 효율적이고 사용자 정의 가능한 다중 객체 추적을 지원합니다. 추적 기능을 활용하려면 다음을 사용할 수 있습니다.
+yolo track
+명령어는 다음과 같습니다:
+비디오에서 객체 추적 예시
+Python
+CLI
+from
+ultralytics
+import
+YOLO
+# Load a pre-trained YOLO model
+model
+=
+YOLO
+(
+"yolo11n.pt"
+)
+# Start tracking objects in a video
+# You can also use live video streams or webcam input
+model
+.
+track
+(
+source
+=
+"path/to/video.mp4"
+)
+# Perform object tracking on a video from the command line
+# You can specify different sources like webcam (0) or RTSP streams
+yolo
+track
+source
+=
+path/to/video.mp4
+객체 추적 설정 및 실행에 대한 자세한 가이드는
+Track Mode
+문서를 확인하십시오. 실시간 시나리오에서의 구성 및 실제 적용에 대해 설명합니다.
+📅
+1년 전에 생성됨
+✏️
+1일 전에 업데이트됨
+트윗
+공유
+댓글
+맨 위로

@@ -1,0 +1,95 @@
+https://docs.ultralytics.com/hub/quickstart
+Ultralytics HUB Quickstart
+Ultralytics HUB
+is designed to be user-friendly and intuitive, allowing users to quickly upload their datasets and train new YOLO models. It also offers a range of pre-trained models to choose from, making it extremely easy for users to get started. Once a model is trained, it can be effortlessly previewed in the
+Ultralytics HUB App
+before being deployed for real-time classification,
+object detection
+, and
+instance segmentation
+tasks.
+Watch:
+How to train Ultralytics YOLO11 on Custom Dataset using Ultralytics HUB | HUB Datasets 🚀
+Get Started
+Ultralytics HUB
+offers a variety of easy signup options. You can register and log in using your Google, Apple, or GitHub accounts, or simply with your email address.
+During the signup, you will be asked to complete your profile.
+Tip
+You can update your profile from the
+Account
+tab on the
+Settings
+page.
+Home
+After signing in, you will be directed to the
+Home
+page of
+Ultralytics HUB
+, which provides a comprehensive overview, quick links, and updates.
+The sidebar conveniently offers links to important modules of the platform, such as
+Datasets
+,
+Projects
+, and
+Models
+.
+Recent
+You can easily search globally or directly access your last updated
+Datasets
+,
+Projects
+, or
+Models
+using the Recent card on the
+Home
+page.
+Upload Dataset
+You can upload a dataset directly from the
+Home
+page. Ultralytics HUB supports various dataset formats and makes it easy to prepare your data for
+training custom YOLO models
+.
+Read more about
+datasets
+and how to prepare them for optimal training results.
+Create Project
+You can create a project directly from the
+Home
+page. Projects help you organize related models and experiments in one place, making it easier to track progress and compare results.
+Read more about
+projects
+and how they can streamline your workflow.
+Train Model
+You can train a model directly from the
+Home
+page. Ultralytics HUB offers multiple training options including
+cloud training
+, Google Colab integration, or using your own hardware.
+Read more about
+models
+and the various architectures available for your computer vision tasks.
+Feedback
+We value your feedback! Feel free to leave a review at any time to help us improve the platform.
+Info
+Only our team will see your feedback, and we will use it to improve our platform.
+Need Help?
+If you encounter any issues or have questions, we're here to assist you.
+You can report a bug, request a feature, or ask a question on
+GitHub
+.
+Note
+When reporting a bug, please include your Environment Details from the
+Support
+page.
+Tip
+You can join our
+Discord
+community for questions and discussions!
+📅
+Created 1 year ago
+✏️
+Updated 7 months ago
+Tweet
+Share
+Comments
+Back to top

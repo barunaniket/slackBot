@@ -1,0 +1,269 @@
+https://docs.ultralytics.com/zh
+中文
+|
+한국어
+|
+日本語
+|
+Русский
+|
+Deutsch
+|
+Français
+|
+Español
+|
+Português
+|
+Türkçe
+|
+Tiếng Việt
+|
+العربية
+主页
+隆重推出
+Ultralytics
+YOLO11
+，这是备受赞誉的实时目标检测和图像分割模型的最新版本。YOLO11 基于
+深度学习
+和
+计算机视觉
+领域的尖端技术，在速度和
+准确性
+方面提供了无与伦比的性能。其简化的设计使其适用于各种应用，并且可以轻松适应从边缘设备到云 API 的不同硬件平台。
+探索 Ultralytics 文档，这是一个综合资源，旨在帮助您理解和利用其特性和功能。无论您是经验丰富的
+机器学习
+从业者还是该领域的新手，此中心都旨在最大限度地发挥 YOLO 在您项目中的潜力。
+从哪里开始
+快速入门
+安装
+ultralytics
+使用 pip 在几分钟内启动并运行，以训练 YOLO 模型
+快速入门
+预测
+使用 YOLO 预测新图像、视频和流
+了解更多
+训练模型
+从头开始在你自己的自定义数据集上训练一个新的 YOLO 模型，或者加载并在预训练的模型上训练
+了解更多
+探索计算机视觉任务
+探索YOLO任务，如检测、分割、分类、姿势估计、旋转框检测和跟踪
+探索任务
+探索YOLO11 🚀
+探索 Ultralytics 最新的先进 YOLO11 模型及其功能
+YOLO11 型号 🚀
+开源，AGPL-3.0
+Ultralytics 提供两种 YOLO 许可：AGPL-3.0 和企业版。在
+GitHub
+上探索 YOLO。
+YOLO 许可证
+观看：
+如何在您的自定义数据集上训练 YOLO11 模型
+Google Colab
+.
+YOLO 简史
+YOLO
+（You Only Look Once）是一种流行的
+物体检测
+和
+图像分割
+模型，由华盛顿大学的 Joseph Redmon 和 Ali Farhadi 开发。YOLO 于 2015 年推出，因其高速和高精度而广受欢迎。
+YOLOv2
+于2016年发布，通过引入批量归一化、锚框和维度聚类，改进了原始模型。
+2018年推出的
+YOLOv3
+，通过使用更高效的主干网络、多个锚点和空间金字塔池化，进一步提高了模型的性能。
+YOLOv4
+于 2020 年发布，引入了诸如 Mosaic
+数据增强
+、一种新的无锚框检测头以及一种新的
+损失函数
+等创新。
+YOLOv5
+进一步提高了模型的性能，并添加了新功能，例如超参数优化、集成实验跟踪和自动导出为流行的导出格式。
+YOLOv6
+于 2022 年由
+美团
+开源，并已应用于该公司的许多自动送货机器人中。
+YOLOv7
+增加了额外的任务，例如在COCO关键点数据集上进行姿势估计。
+Ultralytics 于 2023 年发布的
+YOLOv8
+引入了新功能和改进，以增强性能、灵活性和效率，并支持全方位的视觉 AI 任务。
+YOLOv9
+引入了创新方法，如可编程梯度信息 (PGI) 和通用高效层聚合网络 (GELAN)。
+YOLOv10
+由
+清华大学
+的研究人员使用
+Ultralytics
+Python 包
+创建，通过引入消除非最大值抑制 (NMS) 要求的端到端头，提供了实时
+物体检测
+方面的进展。
+YOLO11
+🚀：
+Ultralytics 最新的YOLO 模型可在多项任务中提供最先进的 (SOTA) 性能，包括
+物体检测
+、
+分割
+、
+姿势估计
+、
+跟踪
+和
+分类
+，充分利用了各种人工智能应用和领域的能力。
+YOLO26
+⚠️ 即将推出
+：Ultralytics 的下一代YOLO 模型针对边缘部署进行了优化，具有端到端无 NMS 推断功能。
+YOLO 许可：Ultralytics YOLO 如何授权？
+Ultralytics 提供两种许可选项，以适应不同的使用场景：
+AGPL-3.0 许可
+：此
+经 OSI 批准的
+开源许可非常适合学生和爱好者，可促进开放协作和知识共享。有关更多详细信息，请参见
+LICENSE
+文件。
+企业许可
+：此许可专为商业用途而设计，允许将 Ultralytics 软件和 AI 模型无缝集成到商业产品和服务中，从而绕过 AGPL-3.0 的开源要求。如果您的场景涉及将我们的解决方案嵌入到商业产品中，请通过
+Ultralytics 许可
+与我们联系。
+我们的许可策略旨在确保对我们的开源项目的任何改进都能够回馈给社区。我们秉持开源原则❤️，我们的使命是保证我们的贡献能够以对所有人都有益的方式被利用和扩展。
+目标检测的演变
+多年来，对象检测技术已经发生了显著的演变，从传统的计算机视觉技术发展到先进的深度学习模型。
+YOLO 模型系列
+一直处于这一发展的前沿，不断突破实时对象检测的可能性。
+YOLO 的独特方法将对象检测视为一个单一的回归问题，通过一次评估直接从完整图像中预测
+边界框
+和类别概率。这种革命性的方法使 YOLO 模型比以前的两阶段检测器快得多，同时保持了高精度。
+随着每个新版本的发布，YOLO 都引入了架构改进和创新技术，从而提高了各种指标的性能。YOLO11 通过结合计算机视觉研究中的最新进展，延续了这一传统，为实际应用提供了更好的速度-精度权衡。
+常见问题
+什么是 Ultralytics YOLO？它如何改进目标检测？
+Ultralytics YOLO是备受赞誉的YOLO（You Only Look Once）系列中最新的技术，用于实时目标检测和图像分割。它在前几个版本的基础上，引入了新的功能和改进，以增强性能、灵活性和效率。YOLO支持各种
+视觉AI任务
+，如检测、分割、姿势估计、跟踪和分类。其最先进的架构确保了卓越的速度和准确性，使其适用于各种应用，包括边缘设备和云API。
+如何开始 YOLO 的安装和设置？
+YOLO 的入门非常快速和直接。您可以使用
+pip
+安装 Ultralytics 软件包，并在几分钟内启动并运行。这是一个基本的安装命令：
+使用 pip 安装
+CLI
+pip
+install
+ultralytics
+有关全面的分步指南，请访问我们的
+快速入门
+页面。此资源将帮助您完成安装说明、初始设置和运行您的第一个模型。
+如何在我的数据集上训练自定义 YOLO 模型？
+在您自己的数据集上训练自定义 YOLO 模型涉及几个详细的步骤：
+准备带注释的数据集。
+在 YAML 文件中配置训练参数。
+使用
+yolo TASK train
+命令开始训练。（每个
+TASK
+都有其自己的参数）
+以下是对象检测任务的示例代码：
+对象检测任务的训练示例
+Python
+CLI
+from
+ultralytics
+import
+YOLO
+# Load a pre-trained YOLO model (you can choose n, s, m, l, or x versions)
+model
+=
+YOLO
+(
+"yolo11n.pt"
+)
+# Start training on your custom dataset
+model
+.
+train
+(
+data
+=
+"path/to/dataset.yaml"
+,
+epochs
+=
+100
+,
+imgsz
+=
+640
+)
+# Train a YOLO model from the command line
+yolo
+detect
+train
+data
+=
+path/to/dataset.yaml
+epochs
+=
+100
+imgsz
+=
+640
+有关详细的演练，请查看我们的
+模型训练
+指南，其中包含优化训练过程的示例和技巧。
+Ultralytics YOLO 有哪些可用的许可选项？
+Ultralytics 为 YOLO 提供两种许可选项：
+AGPL-3.0 许可
+：此开源许可非常适合教育和非商业用途，可促进开放协作。
+企业许可
+：此许可专为商业应用而设计，允许将 Ultralytics 软件无缝集成到商业产品中，而没有 AGPL-3.0 许可的限制。
+有关更多详细信息，请访问我们的
+许可
+页面。
+Ultralytics YOLO 如何用于实时目标跟踪？
+Ultralytics YOLO 支持高效且可定制的多对象跟踪。要使用跟踪功能，您可以使用
+yolo track
+命令，如下所示：
+视频对象跟踪示例
+Python
+CLI
+from
+ultralytics
+import
+YOLO
+# Load a pre-trained YOLO model
+model
+=
+YOLO
+(
+"yolo11n.pt"
+)
+# Start tracking objects in a video
+# You can also use live video streams or webcam input
+model
+.
+track
+(
+source
+=
+"path/to/video.mp4"
+)
+# Perform object tracking on a video from the command line
+# You can specify different sources like webcam (0) or RTSP streams
+yolo
+track
+source
+=
+path/to/video.mp4
+有关设置和运行对象跟踪的详细指南，请查看我们的
+跟踪模式
+文档，其中解释了实时场景中的配置和实际应用。
+📅
+创建于 1 年前
+✏️
+更新于 1 天前
+Tweet
+分享
+评论
+回到顶部
